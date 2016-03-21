@@ -10,8 +10,6 @@
     <script type="text/javascript">
         var fabmo = new FabMoDashboard();
     </script>
-<script src="js/control.js"></script>
-<script src="js/config.js"></script>
 <script>
 $(document).on("mobileinit", function() {
 	console.log("mobileinit")
@@ -46,7 +44,6 @@ var curve = []
 var timer
 var sketch = false
 
-
 function makesmooth(){
 
 smooth=[]
@@ -73,7 +70,6 @@ for (i=0;i<curve.length;i++) {
 	    p1y = p1.y
 	    smooth[i].push({x:(0.75*p0x+0.25*p1x),y:(0.75*p0y+0.25*p1y)})
 	    smooth[i].push({x:(0.25*p0x+0.75*p1x),y:(0.25*p0y+0.75*p1y)})
-
 	}
 	smooth[i].push(curve[i][curve[i].length-1])
 }
@@ -124,8 +120,6 @@ if(smooth.length>0){
 	}
 	
 }
-
-
 
 ctx.lineWidth = 1;
 ctx.strokeStyle = "#000"
@@ -208,28 +202,24 @@ $(window).resize(function(){
 
 function make(){
 
-
 var material = {feed:500,plunge:200}
 var pass = 1
 var pass_no=1
 var pass_depth=1
 
-
 g+="g21\n"
 g+="g0z3\n"
-//g+="m3\n"
 g+="m4\n"
 g+="g4p2\n"
 
-
 while(pass<=pass_no){
    
-   for(i=0;i<points.length;i++){
-   	g+="g0x"+((points[i][0].x)/5).toFixed(3) +"y"+ ((points[i][0].x)/5).toFixed(3) + "\n"
+   for(i=0;i<smooth.length;i++){
+   	g+="g0x"+(smooth[i][0].x).toFixed(3) +"y"+ (smooth[i][0].y).toFixed(3) + "\n"
    	g+="g1z-1f200\n"
    	g+="g1f400\n"
-   	for(j=1;j<points[i].length;j++){
-	      g+="g1x"+((points[i][j].x)/5).toFixed(3) +"y"+ ((points[i][j].x)/5).toFixed(3) + "\n"
+   	for(j=1;j<smooth[i].length;j++){
+	      g+="g1x"+(smooth[i][j].x).toFixed(3) +"y"+ (smooth[i][j].y).toFixed(3) + "\n"
 		}
 		g+="g0z3\n"
    }
@@ -239,16 +229,15 @@ while(pass<=pass_no){
 g+="m5\n"
 g+="m30\n"
 
-console.log(g)
+//console.log(g)
 
-/*
 fabmo.submitJob({
    file : g,
-   filename : 'sketch.g',
+   filename : "sketch.g",
    name : "SKETCH",
-   description : "mm" 
+   description : ""
 });
-*/
+
 
 g=""
 
