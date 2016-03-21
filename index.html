@@ -245,12 +245,20 @@ var pass = 1
 var pass_no=1
 var pass_depth=1
 
-//change to inches because Bill is clueless and can't think in metric!
-//g+="g21\n"
-//g+="g0z3\n"
+//add test for inch/metric based on size of drawing
+//Bill's mod
 
-g+="g20\n"
+if (SizeX > 6){
+	g+="g21\n"}
+	else{
+	g+="g20\n"
+	};
+	
 g+="g0z " + SafeZ + "\n"
+
+//end Bill's mods
+
+
 g+="m4\n"
 g+="g4p2\n"
 
