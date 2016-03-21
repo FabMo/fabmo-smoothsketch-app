@@ -36,6 +36,23 @@ canvas{
 
 <script>
 
+//hard coded settings
+// Bill's mods
+var SizeX = 3
+var SizeY = 2
+var CutDepth = -0.015
+var SafeZ = 0.2
+
+//variables for setting mins and maxs
+var MinX = 100000
+var MaxX = -100000
+var MinY = 100000
+var MaxY = -100000
+var DeltaX 
+var DeltaY
+
+// end Bill's mods
+
 var g = ""
 var points = []
 var smooth = []
@@ -160,6 +177,22 @@ $("#myCanvas").bind('vmousedown', function(e) {
 $("#myCanvas").bind('vmousemove', function(e) {
 	if((sketch==true) && (typeof e.clientX != 'undefined')) {
 		ctx.lineTo(e.clientX,e.clientY)
+		
+		// find min and max values
+		//Bill's mods
+		if (e.clientX > MaxX){
+            MaxX = e.clientX
+        }
+        else if (e.clientX < MinX) {
+            MinX = e.clientX
+        }
+        else if (e.clientY > MaxY){
+            MaxY = e.clientY 
+        }
+        else if (e.clientY < MinY) {
+            MinY = e.clientY 
+        };
+		//end bill's mods
 	   points[points.length-1].push({x:e.clientX,y:e.clientY})
 	   ctx.stroke()
 	}
@@ -187,26 +220,62 @@ $(window).resize(function(){
 
 function make(){
 
+//calculate scaling
+//Bill's mods
+    var Scale
+    
+    DeltaX = MaxX - MinX
+    DeltaY = MaxY - MinY
+    console.log("DeltaX = " + DeltaX)
+    console.log("DeltaY = " + DeltaY)
+    
+    var ScaleFactorX = SizeX / DeltaX
+    var ScaleFactorY = SizeY / DeltaY
+    if (ScaleFactorX < ScaleFactorY) {
+        Scale = ScaleFactorX
+    }
+    else {
+        Scale = ScaleFactorY
+    }
+	
+	//end Bill's mods
+
 var material = {feed:500,plunge:200}
 var pass = 1
 var pass_no=1
 var pass_depth=1
 
-g+="g21\n"
-g+="g0z3\n"
+//change to inches because Bill is clueless and can't think in metric!
+//g+="g21\n"
+//g+="g0z3\n"
+
+g+="g20\n"
+g+="g0z " + SafeZ + "\n"
 g+="m4\n"
 g+="g4p2\n"
 
 while(pass<=pass_no){
    
    for(i=0;i<smooth.length;i++){
-   	g+="g0x"+(smooth[i][0].x).toFixed(3) +"y"+ (smooth[i][0].y).toFixed(3) + "\n"
-   	g+="g1z-1f200\n"
+   
+   //Bill's mods for scaling and position
+   	//g+="g0x"+(smooth[i][0].x).toFixed(3) +"y"+ (smooth[i][0].y).toFixed(3) + "\n"
+   	//g+="g1z-1f200\n"
+   	//g+="g1f400\n"
+   	//for(j=1;j<smooth[i].length;j++){
+	 //     g+="g1x"+(smooth[i][j].x).toFixed(3) +"y"+ (smooth[i][j].y).toFixed(3) + "\n"
+	//	}
+	//	g+="g0z3\n"
+	
+	g+="g0x"+(((smooth[i][0].x) - MinX) * Scale) .toFixed(3)  +"y"+ (SizeY - (((smooth[i][0].y) - MinY) * Scale)).toFixed(3) + "\n"
+   	g+="g1z " + CutDepth + "f200\n"
    	g+="g1f400\n"
    	for(j=1;j<smooth[i].length;j++){
-	      g+="g1x"+(smooth[i][j].x).toFixed(3) +"y"+ (smooth[i][j].y).toFixed(3) + "\n"
+	      g+="g1x"+(((smooth[i][j].x) - MinX) * Scale) .toFixed(3)  +"y"+ (SizeY - (((smooth[i][j].y) - MinY) * Scale)).toFixed(3)  + "\n"
 		}
-		g+="g0z3\n"
+		g+="g0z " + SafeZ + "\n"
+		
+		// end Bill's mods
    }
    pass++
 }
