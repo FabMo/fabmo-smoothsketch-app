@@ -95,6 +95,21 @@ if(curve.length>1){
 				p0y = p0.y,
 				p1x = p1.x,
 			    p1y = p1.y
+				
+				//Bill's mods
+		if (p0x > MaxX){
+            MaxX = p0x
+        }
+        else if (p0x < MinX) {
+            MinX = p0x
+        }
+        else if (p0y > MaxY){
+            MaxY = p0y 
+        }
+        else if (p0y < MinY) {
+            MinY = p0y 
+        };
+		//end bill's mods
 			smooth[points.length-1].push({x:(0.75*p0x+0.25*p1x),y:(0.75*p0y+0.25*p1y)})
 			smooth[points.length-1].push({x:(0.25*p0x+0.75*p1x),y:(0.25*p0y+0.75*p1y)})
 		}
@@ -179,7 +194,7 @@ $("#myCanvas").bind('vmousemove', function(e) {
 		ctx.lineTo(e.clientX,e.clientY)
 		
 		// find min and max values
-		//Bill's mods
+		/*Bill's mods
 		if (e.clientX > MaxX){
             MaxX = e.clientX
         }
@@ -193,6 +208,7 @@ $("#myCanvas").bind('vmousemove', function(e) {
             MinY = e.clientY 
         };
 		//end bill's mods
+		*/
 	   points[points.length-1].push({x:e.clientX,y:e.clientY})
 	   ctx.stroke()
 	}
@@ -253,7 +269,7 @@ function make(){
     else {
         Scale = ScaleFactorY
     }
-	
+	console.log(Scale)
 	//end Bill's mods
 
 var material = {feed:500,plunge:200}
@@ -309,16 +325,16 @@ while(pass<=pass_no){
 g+="m5\n"
 g+="m30\n"
 
-//console.log(g)
+console.log(g)
 
-fabmo.submitJob({
+/*fabmo.submitJob({
    file : g,
    filename : "sketch.g",
    name : "SKETCH",
    description : ""
 });
 
-
+*/
 g=""
 
 }
