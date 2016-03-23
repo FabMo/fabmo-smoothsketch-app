@@ -22,7 +22,7 @@ canvas{
 	position: absolute;
 	left: 0px;
 	bottom: 0px;
-   background: #eee;
+   background: #555;
 }
 
 </style>
@@ -120,11 +120,6 @@ else{
 	}
 }
 
-//console.log(xmin + " " + ymin + " " + xmax + " " + ymax)
-//console.log(curve[0].x)
-//console.log(smooth)
-//dots=+(curve)
-//console.log(dots)
 
 draw()
 
@@ -140,7 +135,12 @@ ctx.canvas.width = $(window).width()-6
 
 ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
 
-ctx.lineWidth = 16
+ctx.beginPath()
+ctx.fillStyle = "#333"
+ctx.rect(xmin-10,ymin-10,xmax+20-xmin,ymax+20-ymin)
+ctx.fill()
+
+ctx.lineWidth = 10
 ctx.strokeStyle = "#6495ed"
 ctx.beginPath()
 ctx.lineJoin="round"
@@ -168,7 +168,7 @@ ctx.lineWidth = 1;
 ctx.beginPath()
 ctx.strokeStyle = "#ccc"
 
-ctx.rect(xmin,ymin,xmax-xmin,ymax-ymin)
+ctx.rect(xmin-10,ymin-10,xmax+20-xmin,ymax+20-ymin)
 //ctx.rect((ctx.canvas.width/2)-(288),(ctx.canvas.height/2)-(216),(648),(432))
 
 ctx.stroke()
@@ -189,7 +189,7 @@ ctx.beginPath()
 ctx.strokeStyle = "#555"
 ctx.fillStyle = "#fff000"
 //ctx.arc((ctx.canvas.width/2)-(288),(ctx.canvas.height/2)+(216),3,0,2*Math.PI)
-ctx.arc(xmin,ymax,3,0,2*Math.PI)
+ctx.arc(xmin-10,ymax+10,4,0,2*Math.PI)
 ctx.fill()
 //ctx.stroke()
 
@@ -199,7 +199,7 @@ ctx.fill()
 $("#myCanvas").bind('vmousedown', function(e) {
 //	console.log(e.type)
 	ctx.beginPath();
-	ctx.lineWidth = 16;
+	ctx.lineWidth = 10;
 	ctx.moveTo(e.clientX,e.clientY)
 	sketch=true
 	points.push([])
