@@ -25,6 +25,8 @@ canvas{
    background: #555;
 }
 
+
+
 </style>
 
 </head>
@@ -65,6 +67,7 @@ points[points.length-1].push(points[points.length-1][0])
 //simplify
 
 points[points.length-1]=simplify(points[points.length-1], 4, true)
+
 curve=points[points.length-1]
 smooth.push([])
 
@@ -97,15 +100,20 @@ if(curve.length>2){
 }
 
 n=0
+
 smooth[points.length-1]=curve
 
 if(typeof xmin == 'undefined'){
+
 	xmin = Math.min.apply(this,$.map(curve, function(o){ return o.x; }))
 	xmax = Math.max.apply(this,$.map(curve, function(o){ return o.x; }))
 	ymin = Math.min.apply(this,$.map(curve, function(o){ return o.y; }))
 	ymax = Math.max.apply(this,$.map(curve, function(o){ return o.y; }))
+
 }
+
 else{
+
 	if((Math.min.apply(this,$.map(curve, function(o){ return o.x; })))<xmin){
 		xmin = Math.min.apply(this,$.map(curve, function(o){ return o.x; }))
 	}
@@ -118,8 +126,8 @@ else{
 	if((Math.max.apply(this,$.map(curve, function(o){ return o.y; })))>ymax){
 		ymax = Math.max.apply(this,$.map(curve, function(o){ return o.y; }))
 	}
+	
 }
-
 
 draw()
 
@@ -130,8 +138,8 @@ function draw(){
 c = document.getElementById("myCanvas");
 ctx = c.getContext("2d")
 
-ctx.canvas.height = $(window).height()-5
-ctx.canvas.width = $(window).width()-6
+ctx.canvas.height = $(window).height()
+ctx.canvas.width = $(window).width()
 
 ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
 
@@ -227,13 +235,11 @@ $("#myCanvas").bind('vmouseup', function(e) {
 
 $( "#myCanvas" ).bind('tap', function(e) {
 	ts = e.timeStamp - ts
-	console.log(ts)
-	if((ts>0)&&(ts<200)){
+//	console.log(ts)
+	if(ts<250){
 		clear()
 	}
 	ts = e.timeStamp
-	
-//	clear()
 });
 
 
@@ -261,6 +267,10 @@ var pass = 1
 var pass_no=1
 var pass_depth=1
 
+//scale 96dpi
+var sf = ((xmax-xmin)/(25.4*(xmax-xmin)/96))
+
+
 g+="g21\n"
 g+="g0z3\n"
 g+="m4\n"
@@ -269,11 +279,11 @@ g+="g4p2\n"
 while(pass<=pass_no){
    
    for(i=0;i<smooth.length;i++){
-   	g+="g0x"+((smooth[i][0].x)-xmin).toFixed(3) +"y"+ ((ymax-ymin)-((smooth[i][0].y))+ymin).toFixed(3) + "\n"
+   	g+="g0x"+(((smooth[i][0].x)-xmin)/sf).toFixed(3) +"y"+ (((ymax-ymin)-((smooth[i][0].y))+ymin)/sf).toFixed(3) + "\n"
    	g+="g1z-1f200\n"
    	g+="g1f400\n"
    	for(j=1;j<smooth[i].length;j++){
-	      g+="g1x"+((smooth[i][j].x)-xmin).toFixed(3) +"y"+ ((ymax-ymin)-((smooth[i][j].y))+ymin).toFixed(3) + "\n"
+	      g+="g1x"+(((smooth[i][j].x)-xmin)/sf).toFixed(3) +"y"+ (((ymax-ymin)-((smooth[i][j].y))+ymin)/sf).toFixed(3) + "\n"
 		}
 		g+="g0z3\n"
    }
