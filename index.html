@@ -41,7 +41,7 @@ canvas{
 var SizeX = 4
 var SizeY = 3
 var CutDepth = -0.04
-var SafeZ = 0.2
+
 
 //variables for setting mins and maxs
 var MinX = 100000
@@ -52,13 +52,13 @@ var DeltaX
 var DeltaY
 
 // end Bill's mods
-
+var SafeZ = 0.2
 var g = ""
 var points = []
 var smooth = []
 var n = 0
-var curve = []
-var timer
+//var curve = []
+var ts = 0
 var sketch = false
 
 function makeSmooth(){
@@ -74,7 +74,7 @@ points[points.length-1].push(points[points.length-1][0])
 
 //simplify
 
-points[points.length-1]=simplify(points[points.length-1], 3, true)
+points[points.length-1]=simplify(points[points.length-1], 4, true)
 curve=points[points.length-1]
 smooth.push([])
 
@@ -206,10 +206,15 @@ $("#myCanvas").bind('vmouseup', function(e) {
 	e.preventDefault()
 });
 
-$( "#myCanvas" ).dblclick(function(e) {
-   points=[]
-   smooth=[]
-   draw()
+$( "#myCanvas" ).bind('tap', function(e) {
+	ts = e.timeStamp - ts
+	console.log(ts)
+	if((ts>0)&&(ts<200)){
+		clear()
+	}
+	ts = e.timeStamp
+	
+//	clear()
 });
 
 
@@ -217,6 +222,17 @@ $(window).resize(function(){
 
 	draw()
 }); 
+
+function clear(){
+    MinX = 100000
+   MaxX = -100000
+   MinY = 100000
+   MaxY = -100000
+   points=[]
+   smooth=[]
+   draw()
+
+}
 
 function make(){
 
@@ -276,10 +292,12 @@ while(pass<=pass_no){
 	//	g+="g0z3\n"
 	
 	g+="g0x"+(((smooth[i][0].x) - MinX) * Scale) .toFixed(3)  +"y"+ (SizeY - (((smooth[i][0].y) - MinY) * Scale)).toFixed(3) + "\n"
+	//g+="g0x"+(((smooth[i][0].x) - MinX) * Scale) .toFixed(3)  +"y"+ (SizeY - (((smooth[i][0].y)) * Scale)).toFixed(3) + "\n"
    	g+="g1z " + CutDepth + "f60\n"
    	g+="g1f60\n"
    	for(j=1;j<smooth[i].length;j++){
 	      g+="g1x"+(((smooth[i][j].x) - MinX) * Scale) .toFixed(3)  +"y"+ (SizeY - (((smooth[i][j].y) - MinY) * Scale)).toFixed(3)  + "\n"
+			//g+="g1x"+(((smooth[i][j].x) - MinX) * Scale) .toFixed(3)  +"y"+ (SizeY - (((smooth[i][j].y)) * Scale)).toFixed(3)  + "\n"
 		}
 		g+="g0z " + SafeZ + "\n"
 		
