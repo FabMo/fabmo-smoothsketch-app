@@ -55,41 +55,68 @@ var ymax
 
 function makeSmooth(){
 
-if(points[points.length-1].length>0){
+//endpts=[]
+/*
+for(i=0;i<smooth.length;i++){
+	endpts.push([smooth[i][0]])
+	endpts[i].push([smooth[i][smooth[i].length-1]])
+}
+*/
+//console.log(endpts)
 
+if(points[points.length-1].length>0){
 	endpts.push([points[points.length-1][0]])
 	endpts[points.length-1].push(points[points.length-1][points[points.length-1].length-1])
 //	console.log(endpts)
 
 }
 
-//connect=[]
+	if((Math.abs(endpts[endpts.length-1][0].x-endpts[endpts.length-1][1].x)<=20) && (Math.abs(endpts[endpts.length-1][0].y-endpts[endpts.length-1][1].y)<=20)){
 
-for(i=endpts.length-1;i>=0;i--){
+endpts[endpts.length-1][1]=endpts[endpts.length-1][0]
 
-	if((Math.abs(endpts[endpts.length-1][0].x-endpts[i][0].x)<=20) && (Math.abs(endpts[endpts.length-1][0].y-endpts[i][0].y)<=20)){
-		connect.push([endpts[endpts.length-1][0],endpts[i][0]])
-	}
-	
-	if((Math.abs(endpts[endpts.length-1][1].x-endpts[i][1].x)<=20) && (Math.abs(endpts[endpts.length-1][1].y-endpts[i][1].y)<=20)){
-		connect.push([endpts[endpts.length-1][1],endpts[i][1]])
-	}
-	
-	if((Math.abs(endpts[endpts.length-1][1].x-endpts[i][0].x)<=20) && (Math.abs(endpts[endpts.length-1][1].y-endpts[i][0].y)<=20)){
-		connect.push([endpts[endpts.length-1][1],endpts[i][0]])
-	}
-	
-	if((Math.abs(endpts[endpts.length-1][0].x-endpts[i][1].x)<=20) && (Math.abs(endpts[endpts.length-1][0].y-endpts[i][1].y)<=20)){
-		connect.push([endpts[endpts.length-1][0],endpts[i][1]])
-	}
-
+points[points.length-1].push(endpts[endpts.length-1][0])
 
 }
 
 
+
+//connect=[]
+
+for(i=endpts.length-2;i>=0;i--){
+
+	if((Math.abs(endpts[endpts.length-1][0].x-endpts[i][0].x)<=20) && (Math.abs(endpts[endpts.length-1][0].y-endpts[i][0].y)<=20)){
+		endpts[endpts.length-1][0]=endpts[i][0]
+//		connect.push([endpts[endpts.length-1][0],endpts[i][0]])
+		points[points.length-1].splice(0,0,endpts[i][0])
+	}
+	
+	if((Math.abs(endpts[endpts.length-1][1].x-endpts[i][1].x)<=20) && (Math.abs(endpts[endpts.length-1][1].y-endpts[i][1].y)<=20)){
+		endpts[endpts.length-1][1]=endpts[i][1]
+//		connect.push([endpts[endpts.length-1][1],endpts[i][1]])
+		points[points.length-1].push(endpts[i][1])
+	}
+	
+	if((Math.abs(endpts[endpts.length-1][1].x-endpts[i][0].x)<=20) && (Math.abs(endpts[endpts.length-1][1].y-endpts[i][0].y)<=20)){
+		endpts[endpts.length-1][1]=endpts[i][0]
+//		connect.push([endpts[endpts.length-1][1],endpts[i][0]])
+		points[points.length-1].push(endpts[i][0])
+	}
+	
+	if((Math.abs(endpts[endpts.length-1][0].x-endpts[i][1].x)<=20) && (Math.abs(endpts[endpts.length-1][0].y-endpts[i][1].y)<=20)){
+		endpts[endpts.length-1][0]=endpts[i][1]
+//		connect.push([endpts[endpts.length-1][0],endpts[i][1]])
+		points[points.length-1].splice(0,0,endpts[i][1])
+	}
+
+}
+
+
+//console.log(connect)
+
 //simplify
 
-points[points.length-1]=simplify(points[points.length-1], 5, true)
+points[points.length-1]=simplify(points[points.length-1], 3, true)
 
 curve=points[points.length-1]
 smooth.push([])
@@ -102,7 +129,7 @@ if(curve.length==1){
 
 if(curve.length>2){
 
-	while(n<=3){
+	while(n<=2){
 		smooth[points.length-1].push(curve[0])
 		for(i=0;i<curve.length-1;i++){
 			var p0 = curve[i]
@@ -219,6 +246,7 @@ if(smooth.length>0){
 ctx.lineWidth = 1
 ctx.fillStyle="#ff00ff"
 ctx.strokeStyle = "#eee"
+/*
 for(i=0;i<connect.length;i++){
 
 ctx.beginPath()	
@@ -228,10 +256,21 @@ ctx.beginPath()
 	ctx.arc(connect[i][1].x,connect[i][1].y,3,0,2*Math.PI)
 ctx.fill()
 ctx.stroke()
+}
+*/
 
+for(i=0;i<smooth.length;i++){
+
+ctx.beginPath()	
+	ctx.arc(smooth[i][0].x,smooth[i][0].y,3,0,2*Math.PI)
+ctx.fill()
+ctx.stroke()
+ctx.beginPath()
+	ctx.arc(smooth[i][smooth[i].length-1].x,smooth[i][smooth[i].length-1].y,3,0,2*Math.PI)
+ctx.fill()
+ctx.stroke()
 
 }
-
 
 ctx.beginPath()
 ctx.strokeStyle = "#555"
