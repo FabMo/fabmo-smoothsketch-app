@@ -42,8 +42,8 @@ var g = ""
 var points = []
 var smooth = []
 var curve = []
-var xall = []
-var yall = []
+var endpts = []
+var connect = []
 var n = 0
 var sketch = false
 var ts = 0
@@ -55,18 +55,41 @@ var ymax
 
 function makeSmooth(){
 
-//join
+if(points[points.length-1].length>0){
 
-if(( (Math.abs((points[points.length-1][0].x)-(points[points.length-1][points[points.length-1].length-1].x))) <=30) && ( (Math.abs((points[points.length-1][0].y)-(points[points.length-1][points[points.length-1].length-1].y))) <=30)){
+	endpts.push([points[points.length-1][0]])
+	endpts[points.length-1].push(points[points.length-1][points[points.length-1].length-1])
+//	console.log(endpts)
 
-points[points.length-1].push(points[points.length-1][0])
+}
+
+//connect=[]
+
+for(i=endpts.length-1;i>=0;i--){
+
+	if((Math.abs(endpts[endpts.length-1][0].x-endpts[i][0].x)<=20) && (Math.abs(endpts[endpts.length-1][0].y-endpts[i][0].y)<=20)){
+		connect.push([endpts[endpts.length-1][0],endpts[i][0]])
+	}
+	
+	if((Math.abs(endpts[endpts.length-1][1].x-endpts[i][1].x)<=20) && (Math.abs(endpts[endpts.length-1][1].y-endpts[i][1].y)<=20)){
+		connect.push([endpts[endpts.length-1][1],endpts[i][1]])
+	}
+	
+	if((Math.abs(endpts[endpts.length-1][1].x-endpts[i][0].x)<=20) && (Math.abs(endpts[endpts.length-1][1].y-endpts[i][0].y)<=20)){
+		connect.push([endpts[endpts.length-1][1],endpts[i][0]])
+	}
+	
+	if((Math.abs(endpts[endpts.length-1][0].x-endpts[i][1].x)<=20) && (Math.abs(endpts[endpts.length-1][0].y-endpts[i][1].y)<=20)){
+		connect.push([endpts[endpts.length-1][0],endpts[i][1]])
+	}
+
 
 }
 
 
 //simplify
 
-points[points.length-1]=simplify(points[points.length-1], 4, true)
+points[points.length-1]=simplify(points[points.length-1], 5, true)
 
 curve=points[points.length-1]
 smooth.push([])
@@ -169,7 +192,7 @@ if(smooth.length>0){
 	
 }
 
-ctx.lineWidth = 1;
+ctx.lineWidth = 1
 
 //72dpi
 
@@ -193,6 +216,23 @@ if(smooth.length>0){
 	}	
 }
 */
+ctx.lineWidth = 1
+ctx.fillStyle="#ff00ff"
+ctx.strokeStyle = "#eee"
+for(i=0;i<connect.length;i++){
+
+ctx.beginPath()	
+	ctx.moveTo(connect[i][0].x,connect[i][0].y)
+	ctx.arc(connect[i][0].x,connect[i][0].y,3,0,2*Math.PI)
+	ctx.lineTo(connect[i][1].x,connect[i][1].y)
+	ctx.arc(connect[i][1].x,connect[i][1].y,3,0,2*Math.PI)
+ctx.fill()
+ctx.stroke()
+
+
+}
+
+
 ctx.beginPath()
 ctx.strokeStyle = "#555"
 ctx.fillStyle = "#fff000"
@@ -235,11 +275,14 @@ $("#myCanvas").bind('vmouseup', function(e) {
 
 $( "#myCanvas" ).bind('tap', function(e) {
 	ts = e.timeStamp - ts
-//	console.log(ts)
 	if(ts<250){
 		clear()
 	}
 	ts = e.timeStamp
+});
+
+$(window).on("orientationchange", function() {
+	draw()
 });
 
 
@@ -256,6 +299,8 @@ function clear(){
 	ymax = undefined
    points=[]
    smooth=[]
+   endpts=[]
+   connect=[]
    draw()
 
 }
