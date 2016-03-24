@@ -1,0 +1,24 @@
+.menu-icon{
+    height: 30px;
+    widows: 30px;
+    position: absolute;
+    right:10px;
+    top: 50 px;
+    cursor: pointer;
+}
+
+.inputContainer{
+    position: absolute;
+    top: 90px;
+    right: -1000px;
+    width: 30%;
+    z-index: 10;
+    transition: all .5s;
+}
+
+@media screen and (max-width: 600px) {
+    .inputContainer{
+        width: 70%;
+    }
+}
+
