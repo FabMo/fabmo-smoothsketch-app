@@ -24,6 +24,8 @@ canvas{
 	position: absolute;
 	left: 0px;
 	bottom: 0px;
+    right: 0px;
+    top: 0px;
    background: #eee;
 }
 
@@ -34,22 +36,40 @@ canvas{
 <body onload="draw();">
 
 <canvas id="myCanvas"></canvas>
-<input id="input_submit" type="button" value="SUBMIT JOB" onclick="make()"/>
+
+<div class='submitContainer'>
+    <input id="input_submit" type="button" value="SUBMIT JOB" onclick="make()"/>
+</div>
 
 <img class="menu-icon" src="css/menu.png">
 <div class="inputContainer">
-    <input type="number" class="width" placeholder="Canvas Width (X)">
-    <input type="number" class="height" placeholder="Canvas Height (Y)">
-    <input type="number" class="depth"  placeholder="Cut Depth">
+    <label for="width">Canvas Width (X)</label>
+    <input type="number" name="width" class="width" placeholder="Canvas Width (X)" value="4"/>
+    <label for="width">Canvas Height (Y)</label>
+    <input type="number" name="height"class="height" placeholder="Canvas Height (Y)" value="3"/>
+    <label for="width">Cut Depth</label>
+    <input type="number" name="depth"class="depth"  placeholder="Cut Depth" value="-0.04"/>
 </div>
 <script>
 
 //hard coded settings
 // Bill's mods
-var SizeX = 4
-var SizeY = 3
-var CutDepth = -0.04
 
+var SizeX = $('.width').val();
+var SizeY = $('.height').val();
+var CutDepth = $('.depth').val();
+
+$('.width').change(function(){
+    SizeX = $('.width').val();
+});
+
+$('.height').change(function(){
+    SizeX = $('.height').val();
+});
+
+$('.depth').change(function(){
+    SizeX = $('.depth').val();
+});
 
 //variables for setting mins and maxs
 var MinX = 100000
@@ -186,7 +206,10 @@ ctx.lineWidth = 6;
 }
 
 $("#myCanvas").bind('vmousedown', function(e) {
-//	console.log(e.type)
+    if ($('.inputContainer').data('open')== 'true'){    
+        $('.inputContainer').css('right', '-1000px');
+        $('.inputContainer').data('open', 'false');
+    }//	console.log(e.type)
 	ctx.beginPath();
 	ctx.moveTo(e.clientX,e.clientY)
 	sketch=true
@@ -248,7 +271,7 @@ $(window).resize(function(){
 }); 
 
 function clear(){
-    MinX = 100000
+   MinX = 100000
    MaxX = -100000
    MinY = 100000
    MaxY = -100000
@@ -268,7 +291,6 @@ function make(){
     DeltaY = (MaxY - MinY)
     //console.log("DeltaX = " + DeltaX)
     //console.log("DeltaY = " + DeltaY)
-    
     var ScaleFactorX = SizeX / DeltaX
     var ScaleFactorY = SizeY / DeltaY
     if (ScaleFactorX < ScaleFactorY) {
@@ -346,12 +368,12 @@ g=""
 
 }
 $('.menu-icon').click(function(){
-    if ($('.inputContainer').data('open')== 'false'){
+    if ($('.inputContainer').data('open')== 'true'){
+        $('.inputContainer').css('right', '-1000px');
+        $('.inputContainer').data('open', 'false');
+    } else {
         $('.inputContainer').css('right', '10px');
         $('.inputContainer').data('open', 'true');
-    } else {
-         $('.inputContainer').css('right', '-1000px');
-        $('.inputContainer').data('open', 'false');
     }
 });
 </script>
