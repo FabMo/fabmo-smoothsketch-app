@@ -43,10 +43,9 @@ var points = []
 var smooth = []
 var curve = []
 var endpts = []
-var connect = []
 var n = 0
-var sketch = false
 var ts = 0
+var sketch = false
 
 var xmin
 var xmax
@@ -55,64 +54,49 @@ var ymax
 
 function makeSmooth(){
 
-//endpts=[]
-/*
-for(i=0;i<smooth.length;i++){
-	endpts.push([smooth[i][0]])
-	endpts[i].push([smooth[i][smooth[i].length-1]])
-}
-*/
-//console.log(endpts)
 
 if(points[points.length-1].length>0){
 	endpts.push([points[points.length-1][0]])
-	endpts[points.length-1].push(points[points.length-1][points[points.length-1].length-1])
-//	console.log(endpts)
-
+	endpts[endpts.length-1].push(points[points.length-1][points[points.length-1].length-1])
 }
 
-	if((Math.abs(endpts[endpts.length-1][0].x-endpts[endpts.length-1][1].x)<=20) && (Math.abs(endpts[endpts.length-1][0].y-endpts[endpts.length-1][1].y)<=20)){
+if((Math.abs(endpts[endpts.length-1][0].x-endpts[endpts.length-1][1].x)<=30) && (Math.abs(endpts[endpts.length-1][0].y-endpts[endpts.length-1][1].y)<=30)){
 
-endpts[endpts.length-1][1]=endpts[endpts.length-1][0]
-
-points[points.length-1].push(endpts[endpts.length-1][0])
-
+	endpts[endpts.length-1][1]=endpts[endpts.length-1][0]
+	points[points.length-1].push(endpts[endpts.length-1][0])
+	endpts.pop()
+	//console.log(endpts)
 }
 
-
-
-//connect=[]
+else{
 
 for(i=endpts.length-2;i>=0;i--){
 
-	if((Math.abs(endpts[endpts.length-1][0].x-endpts[i][0].x)<=20) && (Math.abs(endpts[endpts.length-1][0].y-endpts[i][0].y)<=20)){
+	if((Math.abs(endpts[endpts.length-1][0].x-endpts[i][0].x)<=15) && (Math.abs(endpts[endpts.length-1][0].y-endpts[i][0].y)<=15)){
 		endpts[endpts.length-1][0]=endpts[i][0]
-//		connect.push([endpts[endpts.length-1][0],endpts[i][0]])
 		points[points.length-1].splice(0,0,endpts[i][0])
 	}
 	
-	if((Math.abs(endpts[endpts.length-1][1].x-endpts[i][1].x)<=20) && (Math.abs(endpts[endpts.length-1][1].y-endpts[i][1].y)<=20)){
+	if((Math.abs(endpts[endpts.length-1][1].x-endpts[i][1].x)<=15) && (Math.abs(endpts[endpts.length-1][1].y-endpts[i][1].y)<=15)){
 		endpts[endpts.length-1][1]=endpts[i][1]
-//		connect.push([endpts[endpts.length-1][1],endpts[i][1]])
 		points[points.length-1].push(endpts[i][1])
 	}
 	
-	if((Math.abs(endpts[endpts.length-1][1].x-endpts[i][0].x)<=20) && (Math.abs(endpts[endpts.length-1][1].y-endpts[i][0].y)<=20)){
+	if((Math.abs(endpts[endpts.length-1][1].x-endpts[i][0].x)<=15) && (Math.abs(endpts[endpts.length-1][1].y-endpts[i][0].y)<=15)){
 		endpts[endpts.length-1][1]=endpts[i][0]
-//		connect.push([endpts[endpts.length-1][1],endpts[i][0]])
 		points[points.length-1].push(endpts[i][0])
 	}
 	
-	if((Math.abs(endpts[endpts.length-1][0].x-endpts[i][1].x)<=20) && (Math.abs(endpts[endpts.length-1][0].y-endpts[i][1].y)<=20)){
+	if((Math.abs(endpts[endpts.length-1][0].x-endpts[i][1].x)<=15) && (Math.abs(endpts[endpts.length-1][0].y-endpts[i][1].y)<=15)){
 		endpts[endpts.length-1][0]=endpts[i][1]
-//		connect.push([endpts[endpts.length-1][0],endpts[i][1]])
 		points[points.length-1].splice(0,0,endpts[i][1])
 	}
 
 }
 
 
-//console.log(connect)
+}
+//console.log(endpts)
 
 //simplify
 
@@ -220,19 +204,13 @@ if(smooth.length>0){
 }
 
 ctx.lineWidth = 1
-
-//72dpi
-
 ctx.beginPath()
-ctx.strokeStyle = "#ccc"
-
-ctx.rect(xmin-10,ymin-10,xmax+20-xmin,ymax+20-ymin)
-//ctx.rect((ctx.canvas.width/2)-(288),(ctx.canvas.height/2)-(216),(648),(432))
-
+	ctx.strokeStyle = "#ccc"
+	ctx.rect(xmin-10,ymin-10,xmax+20-xmin,ymax+20-ymin)
 ctx.stroke()
 
-ctx.strokeStyle = "#555"
 /*
+ctx.strokeStyle = "#555"
 if(smooth.length>0){
 	for(i=0;i<smooth.length;i++){
 		for(j=0;j<smooth[i].length;j++){
@@ -243,48 +221,30 @@ if(smooth.length>0){
 	}	
 }
 */
+
 ctx.lineWidth = 1
 ctx.fillStyle="#ff00ff"
 ctx.strokeStyle = "#eee"
-/*
-for(i=0;i<connect.length;i++){
 
-ctx.beginPath()	
-	ctx.moveTo(connect[i][0].x,connect[i][0].y)
-	ctx.arc(connect[i][0].x,connect[i][0].y,3,0,2*Math.PI)
-	ctx.lineTo(connect[i][1].x,connect[i][1].y)
-	ctx.arc(connect[i][1].x,connect[i][1].y,3,0,2*Math.PI)
-ctx.fill()
-ctx.stroke()
-}
-*/
-
-for(i=0;i<smooth.length;i++){
-
-ctx.beginPath()	
-	ctx.arc(smooth[i][0].x,smooth[i][0].y,3,0,2*Math.PI)
-ctx.fill()
-ctx.stroke()
-ctx.beginPath()
-	ctx.arc(smooth[i][smooth[i].length-1].x,smooth[i][smooth[i].length-1].y,3,0,2*Math.PI)
-ctx.fill()
-ctx.stroke()
-
+for(i=0;i<endpts.length;i++){
+	ctx.beginPath()	
+		ctx.arc(endpts[i][0].x,endpts[i][0].y,3,0,2*Math.PI)
+	ctx.fill()
+	ctx.stroke()
+	ctx.beginPath()	
+		ctx.arc(endpts[i][1].x,endpts[i][1].y,3,0,2*Math.PI)
+	ctx.fill()
+	ctx.stroke()
 }
 
 ctx.beginPath()
-ctx.strokeStyle = "#555"
-ctx.fillStyle = "#fff000"
-//ctx.arc((ctx.canvas.width/2)-(288),(ctx.canvas.height/2)+(216),3,0,2*Math.PI)
-ctx.arc(xmin-10,ymax+10,4,0,2*Math.PI)
+	ctx.fillStyle = "#fff000"
+	ctx.arc(xmin-10,ymax+10,4,0,2*Math.PI)
 ctx.fill()
-//ctx.stroke()
-
 
 }
 
 $("#myCanvas").bind('vmousedown', function(e) {
-//	console.log(e.type)
 	ctx.beginPath();
 	ctx.lineWidth = 10;
 	ctx.moveTo(e.clientX,e.clientY)
@@ -331,7 +291,6 @@ $(window).resize(function(){
 }); 
 
 function clear(){
-
 	xmin = undefined
 	xmax = undefined
 	ymin = undefined
@@ -341,7 +300,6 @@ function clear(){
    endpts=[]
    connect=[]
    draw()
-
 }
 
 function make(){
