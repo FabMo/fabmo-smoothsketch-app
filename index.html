@@ -2,6 +2,7 @@
 <html lang="en"> 
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8"/>
+<link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/jquery.mobile-1.4.5.css">
 
 <script src="js/jquery-1.11.2.min.js"></script>
@@ -34,8 +35,15 @@ canvas{
 <body onload="draw();">
 
 <canvas id="myCanvas"></canvas>
-<input id="input_submit" type="button" value="SUBMIT JOB" onclick="make()"/>
 
+<div class='submitContainer'>
+    <input id="input_submit" type="button" value="SUBMIT JOB" onclick="make()"/>
+</div>
+<img class="menu-icon" src="css/menu.png">
+<div class="inputContainer">
+    <label for="feedrate">FEEDRATE</label>
+    <input type="number" name="feedrate" id="feedrate" step="10" value="600" autocomplete="on"/>
+</div>
 <script>
 
 var g = ""
@@ -46,11 +54,15 @@ var endpts = []
 var n = 0
 var ts = 0
 var sketch = false
+var max_depth = 1
+var z = []
 
 var xmin
 var xmax
 var ymin
 var ymax
+var zmin
+var zmax
 
 function makeSmooth(){
 
@@ -60,7 +72,7 @@ if(points[points.length-1].length>0){
 	endpts[endpts.length-1].push(points[points.length-1][points[points.length-1].length-1])
 }
 
-if((Math.abs(endpts[endpts.length-1][0].x-endpts[endpts.length-1][1].x)<=30) && (Math.abs(endpts[endpts.length-1][0].y-endpts[endpts.length-1][1].y)<=30)){
+if((Math.abs(endpts[endpts.length-1][0].x-endpts[endpts.length-1][1].x)<=25) && (Math.abs(endpts[endpts.length-1][0].y-endpts[endpts.length-1][1].y)<=25)){
 
 	endpts[endpts.length-1][1]=endpts[endpts.length-1][0]
 	points[points.length-1].push(endpts[endpts.length-1][0])
@@ -72,22 +84,22 @@ else{
 
 for(i=endpts.length-2;i>=0;i--){
 
-	if((Math.abs(endpts[endpts.length-1][0].x-endpts[i][0].x)<=15) && (Math.abs(endpts[endpts.length-1][0].y-endpts[i][0].y)<=15)){
+	if((Math.abs(endpts[endpts.length-1][0].x-endpts[i][0].x)<=25) && (Math.abs(endpts[endpts.length-1][0].y-endpts[i][0].y)<=25)){
 		endpts[endpts.length-1][0]=endpts[i][0]
 		points[points.length-1].splice(0,0,endpts[i][0])
 	}
 	
-	if((Math.abs(endpts[endpts.length-1][1].x-endpts[i][1].x)<=15) && (Math.abs(endpts[endpts.length-1][1].y-endpts[i][1].y)<=15)){
+	if((Math.abs(endpts[endpts.length-1][1].x-endpts[i][1].x)<=25) && (Math.abs(endpts[endpts.length-1][1].y-endpts[i][1].y)<=25)){
 		endpts[endpts.length-1][1]=endpts[i][1]
 		points[points.length-1].push(endpts[i][1])
 	}
 	
-	if((Math.abs(endpts[endpts.length-1][1].x-endpts[i][0].x)<=15) && (Math.abs(endpts[endpts.length-1][1].y-endpts[i][0].y)<=15)){
+	if((Math.abs(endpts[endpts.length-1][1].x-endpts[i][0].x)<=25) && (Math.abs(endpts[endpts.length-1][1].y-endpts[i][0].y)<=25)){
 		endpts[endpts.length-1][1]=endpts[i][0]
 		points[points.length-1].push(endpts[i][0])
 	}
 	
-	if((Math.abs(endpts[endpts.length-1][0].x-endpts[i][1].x)<=15) && (Math.abs(endpts[endpts.length-1][0].y-endpts[i][1].y)<=15)){
+	if((Math.abs(endpts[endpts.length-1][0].x-endpts[i][1].x)<=25) && (Math.abs(endpts[endpts.length-1][0].y-endpts[i][1].y)<=25)){
 		endpts[endpts.length-1][0]=endpts[i][1]
 		points[points.length-1].splice(0,0,endpts[i][1])
 	}
@@ -162,6 +174,50 @@ else{
 	}
 	
 }
+//z
+
+
+z=[]
+
+for(i=0;i<smooth.length;i++){
+	z.push([])
+	for(j=0;j<smooth[i].length-1;j++){
+		z[i].push({z:(max_depth/(max_depth*(1+(Math.sqrt(Math.pow((smooth[i][j].x-smooth[i][j+1].x),2)+Math.pow((smooth[i][j].y-smooth[i][j+1].y),2))))))})		
+	}
+z[i].push({z:(z[i][z[i].length-1]).z})
+
+}
+//console.log(z)
+
+
+for(i=0;i<z.length;i++){
+
+zmax = Math.max.apply(this,$.map(z[i], function(o){ return o.z; }))
+zmin = Math.min.apply(this,$.map(z[i], function(o){ return o.z; }))
+//console.log(1/(zmax-zmin))
+//console.log((zmax-zmin)*(1/(zmax-zmin)))
+//console.log(zmin-zmin)
+
+	for(j=0;j<z[i].length;j++){
+
+	if(zmax!=zmin){
+//		console.log(((1/(zmax-zmin)) * (z[i][j].z-zmin)).toFixed(3))
+		z[i][j].z = parseFloat((((1/(zmax-zmin)) * (z[i][j].z-zmin))).toFixed(3))
+		if(z[i][j].z>1){
+//			console.log(i + " " + j)
+		}
+	}
+	else{
+		//average speed
+		z[i][j].z=0
+	}
+	}
+}
+
+//console.log(z)
+
+//console.log(smooth)
+
 
 draw()
 
@@ -176,6 +232,7 @@ ctx.canvas.height = $(window).height()
 ctx.canvas.width = $(window).width()
 
 ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
+
 
 ctx.beginPath()
 ctx.fillStyle = "#333"
@@ -209,7 +266,7 @@ ctx.beginPath()
 	ctx.rect(xmin-10,ymin-10,xmax+20-xmin,ymax+20-ymin)
 ctx.stroke()
 
-/*
+
 ctx.strokeStyle = "#555"
 if(smooth.length>0){
 	for(i=0;i<smooth.length;i++){
@@ -220,7 +277,7 @@ if(smooth.length>0){
 		}
 	}	
 }
-*/
+
 
 ctx.lineWidth = 1
 ctx.fillStyle="#ff00ff"
@@ -236,15 +293,57 @@ for(i=0;i<endpts.length;i++){
 	ctx.fill()
 	ctx.stroke()
 }
-
+/*
 ctx.beginPath()
 	ctx.fillStyle = "#fff000"
-	ctx.arc(xmin-10,ymax+10,4,0,2*Math.PI)
+	ctx.arc(xmin-10,ymax+10,2,0,2*Math.PI)
 ctx.fill()
+*/
+
+ctx.lineWidth = 1
+ctx.beginPath()
+	ctx.strokeStyle = "#ccc"
+//	ctx.rect(200,200,125,125)
+ctx.stroke()
+
+
+ctx.beginPath()
+	ctx.fillStyle = "#fff"
+	ctx.arc(xmin,ymax+10,1,0,2*Math.PI)
+ctx.fill()
+
+ctx.beginPath()
+	ctx.fillStyle = "#fff"
+	ctx.arc(xmax,ymax+10,1,0,2*Math.PI)
+ctx.fill()
+
+ctx.beginPath()
+	ctx.fillStyle = "#fff"
+	ctx.arc(xmin-10,ymax,1,0,2*Math.PI)
+ctx.fill()
+
+ctx.beginPath()
+	ctx.fillStyle = "#fff"
+	ctx.arc(xmin-10,ymin,1,0,2*Math.PI)
+ctx.fill()
+
+
+
+ctx.fillStyle='#ddd'
+ctx.font = "16px Arial";
+ctx.fillText((25.4*((xmax-xmin)/125.37)).toFixed(1) + " mm",(xmax)-((xmax-xmin)*0.5)-20,ymax+30);
+
+//ctx.rotate(20*Math.PI/180);
+ctx.fillText((25.4*((ymax-ymin)/125.37)).toFixed(1) + " mm",(xmin)-85,ymax-(ymax-ymin)/2);
 
 }
 
 $("#myCanvas").bind('vmousedown', function(e) {
+    if ($('.inputContainer').data('open')== 'true'){    
+        $('.inputContainer').css('right', '-1000px');
+        $('.inputContainer').data('open', 'false');
+   }
+
 	ctx.beginPath();
 	ctx.lineWidth = 10;
 	ctx.moveTo(e.clientX,e.clientY)
@@ -304,13 +403,13 @@ function clear(){
 
 function make(){
 
-var material = {feed:500,plunge:200}
+var feedrate = document.getElementById('feedrate').value
 var pass = 1
 var pass_no=1
 var pass_depth=1
 
-//scale 96dpi
-var sf = ((xmax-xmin)/(25.4*(xmax-xmin)/96))
+//scale 125.37 ppi
+var sf = ((xmax-xmin)/(25.4*(xmax-xmin)/125.37))
 
 
 g+="g21\n"
@@ -322,10 +421,10 @@ while(pass<=pass_no){
    
    for(i=0;i<smooth.length;i++){
    	g+="g0x"+(((smooth[i][0].x)-xmin)/sf).toFixed(3) +"y"+ (((ymax-ymin)-((smooth[i][0].y))+ymin)/sf).toFixed(3) + "\n"
-   	g+="g1z-1f200\n"
-   	g+="g1f400\n"
+   	g+="g1z-"+ (z[i][0].z) +"f" + (feedrate/2).toFixed(0) + "\n"
+   	g+="g1f" + feedrate + "\n"
    	for(j=1;j<smooth[i].length;j++){
-	      g+="g1x"+(((smooth[i][j].x)-xmin)/sf).toFixed(3) +"y"+ (((ymax-ymin)-((smooth[i][j].y))+ymin)/sf).toFixed(3) + "\n"
+	      g+="g1x"+(((smooth[i][j].x)-xmin)/sf).toFixed(3) +"y"+ (((ymax-ymin)-((smooth[i][j].y))+ymin)/sf).toFixed(3) + "z-" + (z[i][j].z) + "\n"
 		}
 		g+="g0z3\n"
    }
@@ -348,6 +447,17 @@ fabmo.submitJob({
 g=""
 
 }
+
+
+$('.menu-icon').click(function(){
+    if ($('.inputContainer').data('open')== 'true'){
+        $('.inputContainer').css('right', '-1000px');
+        $('.inputContainer').data('open', 'false');
+    } else {
+        $('.inputContainer').css('right', '10px');
+        $('.inputContainer').data('open', 'true');
+    }
+});
 
 </script>
 
