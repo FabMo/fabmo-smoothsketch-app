@@ -43,6 +43,7 @@ canvas{
 <div class="inputContainer">
     <label for="feedrate">FEEDRATE</label>
     <input type="number" name="feedrate" id="feedrate" step="10" value="600" autocomplete="on"/>
+    <input type="submit" name="fullscreen" id="fullscreen" onclick="toggleFullScreen()" value="FULLSCREEN"/>
 </div>
 <script>
 
@@ -54,7 +55,10 @@ var endpts = []
 var n = 0
 var ts = 0
 var sketch = false
+
+var min_depth = 1
 var max_depth = 1
+
 var z = []
 
 var xmin
@@ -176,7 +180,6 @@ else{
 }
 //z
 
-
 z=[]
 
 for(i=0;i<smooth.length;i++){
@@ -189,23 +192,15 @@ z[i].push({z:(z[i][z[i].length-1]).z})
 }
 //console.log(z)
 
-
 for(i=0;i<z.length;i++){
 
 zmax = Math.max.apply(this,$.map(z[i], function(o){ return o.z; }))
 zmin = Math.min.apply(this,$.map(z[i], function(o){ return o.z; }))
-//console.log(1/(zmax-zmin))
-//console.log((zmax-zmin)*(1/(zmax-zmin)))
-//console.log(zmin-zmin)
 
 	for(j=0;j<z[i].length;j++){
 
 	if(zmax!=zmin){
-//		console.log(((1/(zmax-zmin)) * (z[i][j].z-zmin)).toFixed(3))
 		z[i][j].z = parseFloat((((1/(zmax-zmin)) * (z[i][j].z-zmin))).toFixed(3))
-		if(z[i][j].z>1){
-//			console.log(i + " " + j)
-		}
 	}
 	else{
 		//average speed
@@ -266,6 +261,7 @@ ctx.beginPath()
 	ctx.rect(xmin-10,ymin-10,xmax+20-xmin,ymax+20-ymin)
 ctx.stroke()
 
+ctx.fillStyle="rgba(255, 255, 255, 0.5)"
 
 ctx.strokeStyle = "#555"
 if(smooth.length>0){
@@ -274,6 +270,7 @@ if(smooth.length>0){
 		   ctx.beginPath();
 			ctx.arc(smooth[i][j].x,smooth[i][j].y,2,0,2*Math.PI)
 			ctx.stroke()
+			ctx.fill()
 		}
 	}	
 }
@@ -403,10 +400,7 @@ function clear(){
 
 function make(){
 
-var feedrate = document.getElementById('feedrate').value
-var pass = 1
-var pass_no=1
-var pass_depth=1
+
 
 //scale 125.37 ppi
 var sf = ((xmax-xmin)/(25.4*(xmax-xmin)/125.37))
@@ -417,18 +411,14 @@ g+="g0z3\n"
 g+="m4\n"
 g+="g4p2\n"
 
-while(pass<=pass_no){
-   
-   for(i=0;i<smooth.length;i++){
-   	g+="g0x"+(((smooth[i][0].x)-xmin)/sf).toFixed(3) +"y"+ (((ymax-ymin)-((smooth[i][0].y))+ymin)/sf).toFixed(3) + "\n"
-   	g+="g1z-"+ (z[i][0].z) +"f" + (feedrate/2).toFixed(0) + "\n"
-   	g+="g1f" + feedrate + "\n"
+for(i=0;i<smooth.length;i++){
+   g+="g0x"+(((smooth[i][0].x)-xmin)/sf).toFixed(3) +"y"+ (((ymax-ymin)-((smooth[i][0].y))+ymin)/sf).toFixed(3) + "\n"
+   g+="g1z-"+ (min_depth+(z[i][0].z)).toFixed(3) +"f" + (feedrate/2).toFixed(0) + "\n"
+   g+="g1f" + feedrate + "\n"
    	for(j=1;j<smooth[i].length;j++){
-	      g+="g1x"+(((smooth[i][j].x)-xmin)/sf).toFixed(3) +"y"+ (((ymax-ymin)-((smooth[i][j].y))+ymin)/sf).toFixed(3) + "z-" + (z[i][j].z) + "\n"
+	      g+="g1x"+(((smooth[i][j].x)-xmin)/sf).toFixed(3) +"y"+ (((ymax-ymin)-((smooth[i][j].y))+ymin)/sf).toFixed(3) + "z-" + (min_depth+(z[i][j].z)).toFixed(3) + "\n"
 		}
-		g+="g0z3\n"
-   }
-   pass++
+	g+="g0z2\n"
 }
 
 g+="m5\n"
@@ -458,6 +448,29 @@ $('.menu-icon').click(function(){
         $('.inputContainer').data('open', 'true');
     }
 });
+
+
+function toggleFullScreen() {
+  if (!document.fullscreenElement &&    // alternative standard method
+      !document.mozFullScreenElement && !document.webkitFullscreenElement) {  // current working methods
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen();
+    } else if (document.documentElement.mozRequestFullScreen) {
+      document.documentElement.mozRequestFullScreen();
+    } else if (document.documentElement.webkitRequestFullscreen) {
+      document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+    }
+  } else {
+    if (document.cancelFullScreen) {
+      document.cancelFullScreen();
+    } else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+    } else if (document.webkitCancelFullScreen) {
+      document.webkitCancelFullScreen();
+    }
+  }
+}
+
 
 </script>
 
