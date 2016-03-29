@@ -23,7 +23,7 @@ canvas{
 	position: absolute;
 	left: 0px;
 	bottom: 0px;
-   background: #555;
+   background: #ddf;
 }
 
 
@@ -37,13 +37,20 @@ canvas{
 <canvas id="myCanvas"></canvas>
 
 <div class='submitContainer'>
-    <input id="input_submit" type="button" value="RUN JOB" onclick="make()"/>
+    <input id="input_submit" type="button" value="SUBMIT" onclick="make()"/>
 </div>
 <img class="menu-icon" src="css/menu.png">
 <div class="inputContainer">
-    <label for="feedrate">FEEDRATE</label>
-    <input type="number" name="feedrate" id="feedrate" step="10" value="600" autocomplete="on"/>
-    <input type="submit" name="fullscreen" id="fullscreen" onclick="toggleFullScreen()" value="FULLSCREEN"/>
+	<label for="feedrate">FEEDRATE</label>
+	<input type="number" name="feedrate" id="feedrate" step="10" value="600" autocomplete="on"/>
+
+	<select id="brush">
+		<option value="line">LINE</option>
+<!--		<option value="paint">LINE2</option>-->
+<!--		<option value="spray">LINE3</option>-->
+	</select> 
+
+	<input type="submit" name="fullscreen" id="fullscreen" onclick="toggleFullScreen()" value="FULLSCREEN"/>
 </div>
 <script>
 
@@ -115,8 +122,17 @@ for(i=endpts.length-2;i>=0;i--){
 //console.log(endpts)
 
 //simplify
+if((document.getElementById("brush").value)=='line'){
+	points[points.length-1]=simplify(points[points.length-1], 3, true)
+}
 
-points[points.length-1]=simplify(points[points.length-1], 3, true)
+if((document.getElementById("brush").value)=='paint'){
+	points[points.length-1]=simplify(points[points.length-1], 5, true)
+}
+
+if((document.getElementById("brush").value)=='spray'){
+	points[points.length-1]=simplify(points[points.length-1], 3, true)
+}
 
 curve=points[points.length-1]
 smooth.push([])
@@ -200,20 +216,16 @@ zmin = Math.min.apply(this,$.map(z[i], function(o){ return o.z; }))
 	for(j=0;j<z[i].length;j++){
 
 	if(zmax!=zmin){
-//		z[i][j].z = parseFloat((((1/(zmax-zmin)) * (z[i][j].z-zmin))).toFixed(3))
 	z[i][j].z = parseFloat((z[i][j].z-zmin).toFixed(3))
 	}
 	else{
-		//average speed
 		z[i][j].z=0
 	}
 	}
 }
 
 //console.log(z)
-
 //console.log(smooth)
-
 
 draw()
 
@@ -221,7 +233,7 @@ draw()
 
 function draw(){
 
-c = document.getElementById("myCanvas");
+c = document.getElementById("myCanvas")
 ctx = c.getContext("2d")
 
 ctx.canvas.height = $(window).height()
@@ -229,9 +241,8 @@ ctx.canvas.width = $(window).width()
 
 ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
 
-
 ctx.beginPath()
-ctx.fillStyle = "#333"
+ctx.fillStyle = "#eee"
 ctx.rect(xmin-10,ymin-10,xmax+20-xmin,ymax+20-ymin)
 ctx.fill()
 
@@ -241,20 +252,72 @@ ctx.beginPath()
 ctx.lineJoin="round"
 ctx.lineCap="round"
 
+if((document.getElementById("brush").value)=='line'){
+
 if(smooth.length>0){
 	for(i=0;i<smooth.length;i++){
-		for(j=0;j<smooth[i].length;j++){
-			if(j==0){
-			ctx.moveTo(smooth[i][j].x,smooth[i][j].y)			
-			}
-			else{
-			ctx.lineTo(smooth[i][j].x,smooth[i][j].y)
-			}
+		ctx.moveTo(smooth[i][0].x,smooth[i][0].y)
+		for(j=1;j<smooth[i].length;j++){				
+			ctx.lineTo(smooth[i][j].x,smooth[i][j].y)			
 		}
 		ctx.stroke()
 	}
-	
 }
+
+}
+
+else if((document.getElementById("brush").value)=='paint'){
+
+ctx.lineWidth = 2
+if(smooth.length>0){
+	for(i=0;i<smooth.length;i++){
+		for(j=0;j<smooth[i].length-1;j++){
+
+		var Ax = smooth[i][j].x
+		var Ay = smooth[i][j].y
+		var Bx = smooth[i][j+1].x
+		var By = smooth[i][j+1].y
+
+		var ABx =  Bx - Ax
+		var ABy =  By - Ay
+
+		var ABLength = Math.sqrt(ABx*ABx + ABy*ABy)
+
+		var NABx = ABx / ABLength
+		var NABy = ABy / ABLength
+
+		var PNABx = -NABy
+		var PNABy =  NABx
+
+		var Dx = Ax + (7)*PNABx
+		var Dy = Ay + (7)*PNABy
+
+		var Cx = Ax + (-7)*PNABx
+		var Cy = Ay + (-7)*PNABy
+
+		ctx.beginPath()
+		ctx.moveTo(smooth[i][j].x,smooth[i][j].y)
+		ctx.lineTo(Dx,Dy)
+		ctx.lineTo(Cx,Cy)
+		ctx.stroke()
+
+		}
+	}
+}
+
+
+/*
+
+
+ctx.beginPath()
+
+ctx.stroke()
+
+*/
+
+
+}
+
 
 ctx.lineWidth = 1
 ctx.beginPath()
@@ -306,25 +369,37 @@ ctx.stroke()
 
 
 ctx.beginPath()
-	ctx.fillStyle = "#fff"
+	ctx.fillStyle = "#000"
 	ctx.arc(xmin,ymax+10,1,0,2*Math.PI)
 ctx.fill()
 
 ctx.beginPath()
-	ctx.fillStyle = "#fff"
 	ctx.arc(xmax,ymax+10,1,0,2*Math.PI)
 ctx.fill()
 
 ctx.beginPath()
-	ctx.fillStyle = "#fff"
 	ctx.arc(xmin-10,ymax,1,0,2*Math.PI)
 ctx.fill()
 
 ctx.beginPath()
-	ctx.fillStyle = "#fff"
 	ctx.arc(xmin-10,ymin,1,0,2*Math.PI)
 ctx.fill()
 
+ctx.beginPath()
+	ctx.arc(xmin,ymin-10,1,0,2*Math.PI)
+ctx.fill()
+
+ctx.beginPath()
+	ctx.arc(xmax,ymin-10,1,0,2*Math.PI)
+ctx.fill()
+
+ctx.beginPath()
+	ctx.arc(xmax+10,ymin,1,0,2*Math.PI)
+ctx.fill()
+
+ctx.beginPath()
+	ctx.arc(xmax+10,ymax,1,0,2*Math.PI)
+ctx.fill()
 
 
 ctx.fillStyle='#ddd'
@@ -427,15 +502,15 @@ g+="m30\n"
 
 //console.log(g)
 
-fabmo.runGCode(g)
-/*
+//fabmo.runGCode(g)
+
 fabmo.submitJob({
    file : g,
    filename : "sketch.g",
    name : "SKETCH",
    description : ""
 });
-*/
+
 
 g=""
 
