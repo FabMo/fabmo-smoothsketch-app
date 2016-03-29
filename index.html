@@ -26,7 +26,9 @@ canvas{
    background: #ddf;
 }
 
-
+#line{
+display:none;
+}
 
 </style>
 
@@ -37,18 +39,12 @@ canvas{
 <canvas id="myCanvas"></canvas>
 
 <div class='submitContainer'>
-    <input id="input_submit" type="button" value="SUBMIT" onclick="make()"/>
+    <input id="input_submit" type="button" value="SUBMIT JOB" onclick="make()"/>
 </div>
 <img class="menu-icon" src="css/menu.png">
 <div class="inputContainer">
 	<label for="feedrate">FEEDRATE</label>
 	<input type="number" name="feedrate" id="feedrate" step="10" value="600" autocomplete="on"/>
-
-	<select id="brush">
-		<option value="line">LINE</option>
-<!--		<option value="paint">LINE2</option>-->
-<!--		<option value="spray">LINE3</option>-->
-	</select> 
 
 	<input type="submit" name="fullscreen" id="fullscreen" onclick="toggleFullScreen()" value="FULLSCREEN"/>
 </div>
@@ -122,17 +118,10 @@ for(i=endpts.length-2;i>=0;i--){
 //console.log(endpts)
 
 //simplify
-if((document.getElementById("brush").value)=='line'){
-	points[points.length-1]=simplify(points[points.length-1], 3, true)
-}
+points[points.length-1]=simplify(points[points.length-1], 3, true)
 
-if((document.getElementById("brush").value)=='paint'){
-	points[points.length-1]=simplify(points[points.length-1], 5, true)
-}
 
-if((document.getElementById("brush").value)=='spray'){
-	points[points.length-1]=simplify(points[points.length-1], 3, true)
-}
+
 
 curve=points[points.length-1]
 smooth.push([])
@@ -252,7 +241,7 @@ ctx.beginPath()
 ctx.lineJoin="round"
 ctx.lineCap="round"
 
-if((document.getElementById("brush").value)=='line'){
+
 
 if(smooth.length>0){
 	for(i=0;i<smooth.length;i++){
@@ -264,59 +253,10 @@ if(smooth.length>0){
 	}
 }
 
-}
-
-else if((document.getElementById("brush").value)=='paint'){
-
-ctx.lineWidth = 2
-if(smooth.length>0){
-	for(i=0;i<smooth.length;i++){
-		for(j=0;j<smooth[i].length-1;j++){
-
-		var Ax = smooth[i][j].x
-		var Ay = smooth[i][j].y
-		var Bx = smooth[i][j+1].x
-		var By = smooth[i][j+1].y
-
-		var ABx =  Bx - Ax
-		var ABy =  By - Ay
-
-		var ABLength = Math.sqrt(ABx*ABx + ABy*ABy)
-
-		var NABx = ABx / ABLength
-		var NABy = ABy / ABLength
-
-		var PNABx = -NABy
-		var PNABy =  NABx
-
-		var Dx = Ax + (7)*PNABx
-		var Dy = Ay + (7)*PNABy
-
-		var Cx = Ax + (-7)*PNABx
-		var Cy = Ay + (-7)*PNABy
-
-		ctx.beginPath()
-		ctx.moveTo(smooth[i][j].x,smooth[i][j].y)
-		ctx.lineTo(Dx,Dy)
-		ctx.lineTo(Cx,Cy)
-		ctx.stroke()
-
-		}
-	}
-}
 
 
-/*
 
 
-ctx.beginPath()
-
-ctx.stroke()
-
-*/
-
-
-}
 
 
 ctx.lineWidth = 1
