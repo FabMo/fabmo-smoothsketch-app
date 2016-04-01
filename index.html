@@ -246,6 +246,9 @@ $("#myCanvas").bind('vmousedown', function(e) {
         $('.inputContainer').css('right', '-1000px');
         $('.inputContainer').data('open', 'false');
     }//	console.log(e.type)
+	if(smooth.length==0){
+		ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
+	}
 	ctx.beginPath();
 	ctx.moveTo(e.clientX,e.clientY)
 	sketch=true
