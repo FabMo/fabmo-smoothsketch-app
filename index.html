@@ -33,7 +33,7 @@ canvas{
 
 </head>
 
-<body onload="draw();">
+<body onload="clear();">
 
 <canvas id="myCanvas"></canvas>
 
@@ -134,9 +134,6 @@ for(i=endpts.length-2;i>=0;i--){
 
 }
 
-
-
-
 //simplify
 
 points[points.length-1]=simplify(points[points.length-1], 4, true)
@@ -183,7 +180,6 @@ if(curve.length>1){
 		smooth[points.length-1]=[]
 		n++
 	}
-	
 }
 
 n=0
@@ -198,8 +194,8 @@ function draw(){
 c = document.getElementById("myCanvas");
 ctx = c.getContext("2d");
 
-ctx.canvas.height = $(window).height()-5
-ctx.canvas.width = $(window).width()-6
+ctx.canvas.height = $(window).height()
+ctx.canvas.width = $(window).width()
 
 ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
 
@@ -306,8 +302,7 @@ $( "#myCanvas" ).bind('tap', function(e) {
 
 
 $(window).resize(function(){
-
-	draw()
+	clear()
 }); 
 
 function clear(){
@@ -318,6 +313,11 @@ function clear(){
    points=[]
    smooth=[]
    draw()
+
+	ctx.fillStyle="#6495ed"
+	ctx.font = "24px Arial";
+	ctx.fillText("sketch here",(ctx.canvas.width/2)-65,(ctx.canvas.height/2)+24);
+
 
 }
 
