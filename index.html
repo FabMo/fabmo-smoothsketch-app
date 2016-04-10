@@ -9,6 +9,7 @@
 <script src="js/jquery-1.11.2.min.js"></script>
 <script src="js/libs/fabmo.js"></script>
 <script src="js/simplify.js"></script>
+<script src="js/default_sketch.js"></script>
     <script type="text/javascript">
         var fabmo = new FabMoDashboard();
     </script>
@@ -88,6 +89,8 @@ var endpts = []
 var n = 0
 var ts = 0
 var sketch = false
+var j
+var i
 
 function makeSmooth(){
 
@@ -98,7 +101,7 @@ if(points[points.length-1].length>0){
 	endpts[endpts.length-1].push(points[points.length-1][points[points.length-1].length-1])
 }
 
-if((Math.abs(endpts[endpts.length-1][0].x-endpts[endpts.length-1][1].x)<=25) && (Math.abs(endpts[endpts.length-1][0].y-endpts[endpts.length-1][1].y)<=25)){
+if((Math.abs(endpts[endpts.length-1][0].x-endpts[endpts.length-1][1].x)<=15) && (Math.abs(endpts[endpts.length-1][0].y-endpts[endpts.length-1][1].y)<=15)){
 
 	endpts[endpts.length-1][1]=endpts[endpts.length-1][0]
 	points[points.length-1].push(endpts[endpts.length-1][0])
@@ -109,22 +112,22 @@ else{
 
 for(i=endpts.length-2;i>=0;i--){
 
-	if((Math.abs(endpts[endpts.length-1][0].x-endpts[i][0].x)<=20) && (Math.abs(endpts[endpts.length-1][0].y-endpts[i][0].y)<=20)){
+	if((Math.abs(endpts[endpts.length-1][0].x-endpts[i][0].x)<=15) && (Math.abs(endpts[endpts.length-1][0].y-endpts[i][0].y)<=15)){
 		endpts[endpts.length-1][0]=endpts[i][0]
 		points[points.length-1].splice(0,0,endpts[i][0])
 	}
 	
-	if((Math.abs(endpts[endpts.length-1][1].x-endpts[i][1].x)<=20) && (Math.abs(endpts[endpts.length-1][1].y-endpts[i][1].y)<=20)){
+	if((Math.abs(endpts[endpts.length-1][1].x-endpts[i][1].x)<=15) && (Math.abs(endpts[endpts.length-1][1].y-endpts[i][1].y)<=15)){
 		endpts[endpts.length-1][1]=endpts[i][1]
 		points[points.length-1].push(endpts[i][1])
 	}
 	
-	if((Math.abs(endpts[endpts.length-1][1].x-endpts[i][0].x)<=20) && (Math.abs(endpts[endpts.length-1][1].y-endpts[i][0].y)<=20)){
+	if((Math.abs(endpts[endpts.length-1][1].x-endpts[i][0].x)<=15) && (Math.abs(endpts[endpts.length-1][1].y-endpts[i][0].y)<=15)){
 		endpts[endpts.length-1][1]=endpts[i][0]
 		points[points.length-1].push(endpts[i][0])
 	}
 	
-	if((Math.abs(endpts[endpts.length-1][0].x-endpts[i][1].x)<=20) && (Math.abs(endpts[endpts.length-1][0].y-endpts[i][1].y)<=20)){
+	if((Math.abs(endpts[endpts.length-1][0].x-endpts[i][1].x)<=15) && (Math.abs(endpts[endpts.length-1][0].y-endpts[i][1].y)<=15)){
 		endpts[endpts.length-1][0]=endpts[i][1]
 		points[points.length-1].splice(0,0,endpts[i][1])
 	}
@@ -247,6 +250,7 @@ $("#myCanvas").bind('vmousedown', function(e) {
         $('.inputContainer').data('open', 'false');
     }//	console.log(e.type)
 	if(smooth.length==0){
+		ctx.translate(-ctx.canvas.width/2,-ctx.canvas.height/2);
 		ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
 	}
 	ctx.beginPath();
@@ -300,7 +304,6 @@ $( "#myCanvas" ).bind('tap', function(e) {
 	}
 	ts = e.timeStamp
 	
-//	clear()
 });
 
 
@@ -317,12 +320,36 @@ function clear(){
    smooth=[]
    draw()
 
-	ctx.fillStyle="#6495ed"
-	ctx.font = "24px Arial";
-	ctx.fillText("sketch here",(ctx.canvas.width/2)-60,(ctx.canvas.height/2)+24);
+//	ctx.fillStyle="#6495ed"
+//	ctx.font = "24px Arial";
+//	ctx.fillText("sketch here",(ctx.canvas.width/2)-60,(ctx.canvas.height/2)+24);
+//	ctx.translate(ctx.canvas.width/2,ctx.canvas.height/2);
 
+ctx.translate(ctx.canvas.width/2,ctx.canvas.height/2);
+ctx.moveTo(default_sketch[0][0].x,default_sketch[0][0].y)
+i=0
+j=0
+animate()
 
 }
+
+function animate () {           
+   setTimeout(function () {    
+      ctx.lineTo(default_sketch[i][j].x,default_sketch[i][j].y)
+		ctx.stroke()    
+      j=j+2;                     
+      if (j < default_sketch[i].length) {            
+         animate();             
+      }
+		else if((j>=default_sketch[i].length) && (i<default_sketch.length-1)) {
+			i++
+			j=0
+			ctx.moveTo(default_sketch[i][j].x,default_sketch[i][j].y)
+			animate();
+		}                        
+   }, 1)
+}
+
 
 function make(){
 
@@ -349,6 +376,7 @@ var material = {feed:500,plunge:200}
 var pass = 1
 var pass_no=1
 var pass_depth=1
+
 
 //add test for inch/metric based on size of drawing
 //Bill's mod
@@ -398,6 +426,27 @@ g+="m5\n"
 g+="m30\n"
 
 //console.log(g)
+
+//define default sketch
+/*
+default_sketch=[]
+for(i=0;i<smooth.length;i++){
+	default_sketch.push(["["])
+	for(j=0;j<smooth[i].length;j++){
+
+		smooth[i][j].x = ((smooth[i][j].x) - (MinX + DeltaX/2)).toFixed(1)
+		smooth[i][j].y = ((smooth[i][j].y) - (MinY+ DeltaY/2)).toFixed(1)
+
+		default_sketch[i]+=(JSON.stringify(smooth[i][j])+",")
+	}
+		default_sketch[i]+=(["]"])
+}
+
+for(i=0;i<default_sketch.length;i++){
+	console.log(default_sketch[i])
+}
+*/
+//
 
 fabmo.submitJob({
    file : g,
