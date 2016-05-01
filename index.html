@@ -90,6 +90,7 @@ var endpts = []
 var n = 0
 var ts = 0
 var sketch = false
+var intro = true
 var j
 var i
 
@@ -195,13 +196,13 @@ draw()
 
 function draw(){
 
-c = document.getElementById("myCanvas");
-ctx = c.getContext("2d");
+c = document.getElementById("myCanvas")
+ctx = c.getContext("2d")
 
 ctx.canvas.height = $(window).height()
 ctx.canvas.width = $(window).width()
 
-ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
+ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height)
 
 ctx.lineWidth = 6;
 ctx.strokeStyle = "#6495ed"
@@ -246,19 +247,23 @@ ctx.lineWidth = 6;
 }
 
 $("#myCanvas").bind('vmousedown', function(e) {
-	if((smooth.length==0)&&($('.inputContainer').data('open')== 'false')){
-  	ctx.translate(-ctx.canvas.width/2,-ctx.canvas.height/2);	
-   ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
+
+//	intro=false
+
+	if((smooth.length==0) && ($('.inputContainer').data('open') == 'false') && (intro==false)){
+	  	ctx.translate(-ctx.canvas.width/2,-ctx.canvas.height/2)	
+   	ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height)
+
 	}
 
-    if ($('.inputContainer').data('open')== 'true'){    
-        $('.inputContainer').css('right', '-1000px');
+    if ($('.inputContainer').data('open') == 'true'){    
+        $('.inputContainer').css('right', '-1000px')
         setTimeout(function(){$('.inputContainer').data('open', 'false')},10);
 		  //setTimeout("sketch_toggle()",500)
     }//	console.log(e.type)
 
 
-	if (($('.inputContainer').data('open')== 'false')){
+	if (($('.inputContainer').data('open') == 'false') && (intro==false)){
 	ctx.beginPath()
 	ctx.moveTo(e.clientX,e.clientY)
 	sketch=true
@@ -272,9 +277,9 @@ $("#myCanvas").bind('vmousedown', function(e) {
 
 $("#myCanvas").bind('vmousemove', function(e) {
 
-	if((sketch==true) && (typeof e.clientX != 'undefined')) {
+	if((sketch==true) && (typeof e.clientX != 'undefined') && (intro==false)) {
 		ctx.lineTo(e.clientX,e.clientY)
-		
+//		console.log(intro)	
 		// find min and max values
 		/*Bill's mods
 		if (e.clientX > MaxX){
@@ -308,7 +313,6 @@ $("#myCanvas").bind('vmouseup', function(e) {
 });
 
 $( "#myCanvas" ).bind('tap', function(e) {
-
 	ts = e.timeStamp - ts
 //	console.log(ts)
 	if((ts>0)&&(ts<200)){
@@ -336,15 +340,17 @@ function clear(){
 //	ctx.fillText("sketch here",(ctx.canvas.width/2)-60,(ctx.canvas.height/2)+24);
 //	ctx.translate(ctx.canvas.width/2,ctx.canvas.height/2);
 
-ctx.translate(ctx.canvas.width/2,ctx.canvas.height/2);
+ctx.translate(ctx.canvas.width/2,ctx.canvas.height/2)
 ctx.moveTo(default_sketch[0][0].x,default_sketch[0][0].y)
 i=0
 j=0
+intro=true
 animate()
 
 }
 
-function animate () {           
+function animate () {
+   if(intro==true){       
    setTimeout(function () {    
       ctx.lineTo(default_sketch[i][j].x,default_sketch[i][j].y)
 		ctx.stroke()    
@@ -357,8 +363,12 @@ function animate () {
 			j=0
 			ctx.moveTo(default_sketch[i][j].x,default_sketch[i][j].y)
 			animate();
+		}
+		else{
+			intro=false
 		}                        
-   }, 1)
+   }, 1)	
+	}
 }
 
 
