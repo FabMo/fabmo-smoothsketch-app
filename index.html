@@ -41,7 +41,7 @@ canvas{
 <div class='submitContainer'>
     <input id="input_submit" type="button" value="SUBMIT JOB" onclick="make()"/>
 </div>
-
+<img class="clear-icon" src="css/trash.png">
 <img class="menu-icon" src="css/menu.png">
 <div class="inputContainer">
     <label for="width">Canvas Width (X)</label>
@@ -316,7 +316,7 @@ $( "#myCanvas" ).bind('tap', function(e) {
 	ts = e.timeStamp - ts
 //	console.log(ts)
 	if((ts>0)&&(ts<200)){
-		clear()
+		//clear()
 	}
 	ts = e.timeStamp
 	
@@ -489,6 +489,11 @@ $('.menu-icon').click(function(){
         $('.inputContainer').data('open', 'true');
     }
 });
+
+$('.clear-icon').click(function(){
+    clear();
+});
+
 </script>
 
 

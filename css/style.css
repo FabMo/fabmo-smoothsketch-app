@@ -10,7 +10,17 @@
     widows: 30px;
     position: absolute;
     right:10px;
-    top: 50 px;
+    top: 55px;
+    cursor: pointer;
+	 padding-left: 1em;
+	 padding-bottom: 1em;
+}
+.clear-icon{
+    height: 35px;
+    widows: 35px;
+    position: absolute;
+    right:5px;
+    bottom: 0px;
     cursor: pointer;
 	 padding-left: 1em;
 	 padding-bottom: 1em;
