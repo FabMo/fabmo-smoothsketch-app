@@ -211,7 +211,14 @@ ctx.canvas.width = $(window).width()
 ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height)
 
 ctx.lineWidth = 6;
-ctx.strokeStyle = "#6495ed"
+
+if($('.inputContainer').data('open')== 'true'){
+	ctx.strokeStyle = "#aaa"
+}
+else{
+	ctx.strokeStyle = "#6495ed"
+}
+
 ctx.beginPath();
 ctx.lineJoin="round"
 ctx.lineCap="round"
@@ -258,11 +265,13 @@ $("#myCanvas").bind('vmousedown', function(e) {
 	if(animation == true){
 		turnOffAnimation()
 	}
-	
-	points.push([])
-	ctx.strokeStyle = "#4169e1"
-	points[points.length-1].push({x:e.clientX,y:e.clientY})
-	sketch=true
+
+	if($('.inputContainer').data('open')== 'false'){
+		points.push([])
+		ctx.strokeStyle = "#4169e1"
+		points[points.length-1].push({x:e.clientX,y:e.clientY})
+		sketch=true
+	}
 	
 });
 
@@ -346,13 +355,13 @@ function animate () {
 		}
       j=j+2;                     
       if (j < default_sketch[i].length) {            
-         animate();             
+         animate()             
       }
 		else if((j>=default_sketch[i].length) && (i<default_sketch.length-1)) {
 			i++
 			j=0
 			ctx.moveTo(default_sketch[i][j].x,default_sketch[i][j].y)
-			animate();
+			animate()
 		}
 
                         
@@ -368,7 +377,7 @@ function animate () {
 function turnOffAnimation(){
 	if(animation==true){
 		animation = false
-		clear();
+		clear()
 	}
 }
 
@@ -484,9 +493,11 @@ $('.menu-icon').click(function(){
     if ($('.inputContainer').data('open')== 'true'){
         $('.inputContainer').css('right', '-1000px');
         $('.inputContainer').data('open', 'false');
+		  draw()
     } else {
         $('.inputContainer').css('right', '10px');
         $('.inputContainer').data('open', 'true');
+		  draw()
     }
 });
 
