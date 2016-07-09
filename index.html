@@ -147,7 +147,7 @@ for(i=endpts.length-2;i>=0;i--){
 
 //simplify
 
-points[points.length-1]=simplify(points[points.length-1], 4, true)
+points[points.length-1]=simplify(points[points.length-1], 3, true)
 curve=points[points.length-1]
 smooth.push([])
 
@@ -196,6 +196,8 @@ if(curve.length>1){
 n=0
 smooth[points.length-1]=curve
 
+//console.log(smooth)
+
 draw()
 
 }
@@ -230,7 +232,7 @@ if(smooth.length>0){
 			ctx.moveTo(smooth[i][j].x,smooth[i][j].y)			
 			}
 			else{
-			ctx.lineTo(smooth[i][j].x,smooth[i][j].y)
+			ctx.lineTo(smooth[i][j].x+0.01,smooth[i][j].y+0.01)
 			}
 		}
 		ctx.stroke()
