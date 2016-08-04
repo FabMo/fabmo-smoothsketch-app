@@ -5,7 +5,6 @@
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/jquery.mobile-1.4.5.css">
 
-
 <script src="js/jquery-1.11.2.min.js"></script>
 <script src="js/libs/fabmo.js"></script>
 <script src="js/simplify.js"></script>
@@ -26,18 +25,7 @@ $(document).on("mobileinit", function() {
     });
 </script> 
 <script src="js/jquery.mobile-1.4.5.js"></script>
-<style>
 
-canvas{
-	position: absolute;
-	left: 0px;
-	bottom: 0px;
-    right: 0px;
-    top: 0px;
-   background: #eee;
-}
-
-</style>
 
 </head>
 
@@ -101,11 +89,9 @@ var n = 0
 var sketch = false
 var animation = true
 
-
 function makeSmooth(){
 
-
-console.log(points)
+//console.log(points)
 //join
 
 if(points[points.length-1].length>0){
@@ -266,18 +252,65 @@ if(smooth.length>0){
 }
 */
 
+	///////////////////////////////////////////////
+	if($('.inputContainer').data('open')== 'true'){
+		ctx.lineWidth = 1;
+		ctx.strokeStyle = "#aaa"
+		ctx.fillStyle = "#aaa"
+
+		ctx.beginPath()
+		ctx.moveTo(MinX,MinY)
+		ctx.lineTo(MinX,MaxY)
+		ctx.lineTo(MaxX,MaxY)
+		ctx.stroke()
+
+		ctx.beginPath()
+		ctx.arc(MinX,MinY,2,0,2*Math.PI);
+		ctx.fill()
+	
+		ctx.beginPath()
+		ctx.arc(MinX,MaxY,2,0,2*Math.PI);
+		ctx.fill()
+
+		ctx.beginPath()
+		ctx.arc(MaxX,MaxY,2,0,2*Math.PI);
+		ctx.fill()
+
+		ctx.font = "22px Arial"
+		if((Math.abs(MaxX-MinX))>(Math.abs(MaxY-MinY)) && ((((Math.abs(MaxY-MinY))/(Math.abs(MaxX-MinX)))*4)<3) ){
+			ctx.fillText( '4\"',MinX+((MaxX-MinX)/2),MaxY+30) //x
+	
+			var x = (((Math.abs(MaxY-MinY))/(Math.abs(MaxX-MinX)))*4).toFixed(1)		
+			ctx.fillText( (x + '\"'),MinX-50,MinY+((MaxY-MinY)/2)) //y
+		}
+		else{
+			ctx.fillText( '3\"',MinX-30,MinY+((MaxY-MinY)/2)) //y
+
+			var y = (((Math.abs(MaxX-MinX))/(Math.abs(MaxY-MinY)))*3).toFixed(1)
+			ctx.fillText( (y + '\"'),MinX+((MaxX-MinX)/2),MaxY+30) //x	
+		}
+	}
+//
+
 ctx.lineWidth = 6;
+ctx.strokeStyle = "#6495ed"
 
 }
 
 $("#myCanvas").bind('vmousedown', function(e) {
+
+	if($('.inputContainer').data('open')=='true'){
+		$('.inputContainer').css('right', '-1000px');
+		$('.inputContainer').data('open', 'false');
+		draw()
+	}
 
 	e.preventDefault()
 	if(animation == true){
 		turnOffAnimation()
 	}
 
-	if($('.inputContainer').data('open')== 'false'){
+	if($('.inputContainer').data('open')=='false'){
 		points.push([])
 		ctx.strokeStyle = "#4169e1"
 		points[points.length-1].push({x:e.clientX,y:e.clientY})
