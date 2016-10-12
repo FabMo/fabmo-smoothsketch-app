@@ -3,6 +3,9 @@ var g = ""
 
 function make(){
 
+
+	if(smooth.length>0){
+
 	g=""
 
 	//calculate scaling
@@ -58,11 +61,24 @@ function make(){
 g+="m5\n"
 g+="m30\n"
 
+fabmo.runGCode(g)
+
+
+/*
 fabmo.submitJob({
    file : g,
    filename : "sketch.g",
   name : "SKETCH",
    description : "Smooth Sketch"
 });
+*/
+clear()
+
+}
+else{
+	console.log("no sketch")
+}
+
+
 
 }
