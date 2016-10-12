@@ -61,19 +61,6 @@ function makeSmooth(){
 				p0y = p0.y,
 				p1x = p1.x,
 			    p1y = p1.y
-				
-				if (p0x > MaxX){
-            	MaxX = p0x
-        		}
-        		else if (p0x < MinX) {
-            	MinX = p0x
-        		}
-        		else if (p0y > MaxY){
-            	MaxY = p0y 
-        		}
-       		else if (p0y < MinY) {
-          	  MinY = p0y 
-        		};
 
 				smooth[points.length-1].push({x:(0.75*p0x+0.25*p1x),y:(0.75*p0y+0.25*p1y)})
 				smooth[points.length-1].push({x:(0.25*p0x+0.75*p1x),y:(0.25*p0y+0.75*p1y)})
@@ -87,6 +74,29 @@ function makeSmooth(){
 
 	n=0
 	smooth[points.length-1]=curve
+
+
+
+	for(i=0;i<smooth.length;i++){
+
+		if((Math.min.apply(this,$.map(smooth[i], function(o){ return o.x; })))<MinX){
+			MinX = Math.min.apply(this,$.map(smooth[i], function(o){ return o.x; }))
+		}
+		if((Math.max.apply(this,$.map(smooth[i], function(o){ return o.x; })))>MaxX){
+			MaxX = Math.max.apply(this,$.map(smooth[i], function(o){ return o.x; }))
+		}
+		if((Math.min.apply(this,$.map(smooth[i], function(o){ return o.y; })))<MinY){
+			MinY = Math.min.apply(this,$.map(smooth[i], function(o){ return o.y; }))
+		}
+		if((Math.max.apply(this,$.map(smooth[i], function(o){ return o.y; })))>MaxY){
+			MaxY = Math.max.apply(this,$.map(smooth[i], function(o){ return o.y; }))
+		}
+	}
+
+	console.log(MinX + " " + MinY + " " + MaxX + " " + MaxY);
+
+
+
 	//console.log(smooth)
 	draw()
 
