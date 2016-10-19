@@ -76,6 +76,7 @@ $("#myCanvas").on('touchstart mousedown', function(e) {
 	console.log(e.type)
 	//e.preventDefault()
 	if($('.inputContainer').data('open')=='true'){
+		document.getElementById("input").style.display="none";
 		$('.inputContainer').css('right', '-1000px')
 		$('.inputContainer').data('open', 'false')
 		draw()
