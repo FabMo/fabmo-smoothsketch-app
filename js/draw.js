@@ -14,6 +14,15 @@ var n = 0
 
 function draw(){
 
+if(document.getElementById("run").checked==true){
+	document.getElementById("submitJob").style.display="none";
+	document.getElementById("play").style.display="block";
+}
+else if(document.getElementById("run").checked==false){
+	document.getElementById("submitJob").style.display="block";
+	document.getElementById("play").style.display="none";
+}
+
 c = document.getElementById("myCanvas")
 ctx = c.getContext("2d")
 
@@ -68,7 +77,16 @@ if(smooth.length>0){
 */
 
 	//dimensions
+	if($('.inputContainer').data('open')== 'false'){
+		//document.getElementById("input").style.display="none";
+
+	}
+
 	if($('.inputContainer').data('open')== 'true'){
+
+		//document.getElementById("submitJob").style.display="none";
+		//document.getElementById("play").style.display="none";
+
 		ctx.lineWidth = 1;
 		ctx.strokeStyle = "#aaa"
 		ctx.fillStyle = "#aaa"
@@ -152,9 +170,6 @@ function animate () {
    }, 1)	
 	}
 	if(animation==true){
-
-
-
 		setTimeout("turnOffAnimation();",3000)
 	}
 

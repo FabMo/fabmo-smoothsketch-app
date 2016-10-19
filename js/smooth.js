@@ -60,7 +60,7 @@ function makeSmooth(){
 			var p0x = p0.x,
 				p0y = p0.y,
 				p1x = p1.x,
-			    p1y = p1.y
+			   p1y = p1.y
 
 				smooth[points.length-1].push({x:(0.75*p0x+0.25*p1x),y:(0.75*p0y+0.25*p1y)})
 				smooth[points.length-1].push({x:(0.25*p0x+0.75*p1x),y:(0.25*p0y+0.75*p1y)})
@@ -74,8 +74,6 @@ function makeSmooth(){
 
 	n=0
 	smooth[points.length-1]=curve
-
-
 
 	for(i=0;i<smooth.length;i++){
 
@@ -93,9 +91,7 @@ function makeSmooth(){
 		}
 	}
 
-	console.log(MinX + " " + MinY + " " + MaxX + " " + MaxY);
-
-
+	//console.log(MinX + " " + MinY + " " + MaxX + " " + MaxY);
 
 	//console.log(smooth)
 	draw()

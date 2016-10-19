@@ -61,17 +61,20 @@ function make(){
 g+="m5\n"
 g+="m30\n"
 
-fabmo.runGCode(g)
 
+if(document.getElementById("run").checked==true){
+	fabmo.runGCode(g)
+}
+else{
 
-/*
-fabmo.submitJob({
-   file : g,
-   filename : "sketch.g",
-  name : "SKETCH",
-   description : "Smooth Sketch"
-});
-*/
+	fabmo.submitJob({
+		file : g,
+		filename : "sketch.g",
+		name : "SKETCH",
+   	description : "Smooth Sketch"
+	});
+}
+
 clear()
 
 }

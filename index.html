@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en"> 
 <head>
+<title>Smooth Sketch</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8"/>
 <link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/jquery.mobile-1.4.5.css">
 
 <script src="js/libs/jquery-1.11.2.min.js"></script>
 <script src="js/libs/fabmo.js"></script>
@@ -19,43 +19,38 @@
         var fabmo = new FabMoDashboard();
     </script>
 
-	<script>
-		$(document).on("mobileinit", function() {
-			console.log("mobileinit")
-		});
-	</script>
-
-	<script>
-	    $(document).bind('mobileinit',function(){
-	        $.mobile.changePage.defaults.changeHash = false;
-	        $.mobile.hashListeningEnabled = false;
-	        $.mobile.pushStateEnabled = false;
-	    });
-	</script> 
-
-<script src="js/libs/jquery.mobile-1.4.5.js"></script>
-
 </head>
 
 <body onload="clear();">
 
+
+
 <canvas id="myCanvas"></canvas>
 
+
+<input type="image" id="play" src="css/play_icon.png" onclick="make()"/>
+<button id="submitJob" onclick="make()"><b>Submit<br>Job!</b></button>
+
+
+<!--
 <div class='submitContainer'>
-    <input id="input_submit" type="button" value="CUT!" onclick="make()"/>
+    <input id="input_submit" type="button" value="cut" onclick="make()"/>
 </div>
+-->
 
 <img class="clear-icon" src="css/trash.png">
 <img class="menu-icon" src="css/menu.png">
-<div class="inputContainer">
-    <label for="gloss">Gloss</label>
-    <input type="number" name="gloss" class="gloss" id="gloss" placeholder="Gloss" value="3" min="0" max = "10" step="1"/>
-    <label for="width">Canvas Width (X)</label>
-    <input type="number" name="width" class="width" placeholder="Canvas Width (X)" value="4"/>
-    <label for="width">Canvas Height (Y)</label>
-    <input type="number" name="height"class="height" placeholder="Canvas Height (Y)" value="3"/>
-    <label for="width">Cut Depth</label>
-    <input type="number" name="depth"class="depth"  placeholder="Cut Depth" value="-0.04"/>
+<div class="inputContainer" id="input">
+    <label for="gloss">Gloss</label><br>
+    <input type="number" name="gloss" class="gloss" id="gloss" placeholder="Gloss" value="3" min="0" max = "10" step="1"/><br>
+    <label for="width">Canvas Width (X)</label><br>
+    <input type="number" name="width" class="width" placeholder="Canvas Width (X)" value="4"/><br>
+    <label for="width">Canvas Height (Y)</label><br>
+    <input type="number" name="height"class="height" placeholder="Canvas Height (Y)" value="3"/><br>
+    <label for="width">Cut Depth</label><br>
+    <input type="number" name="depth"class="depth"  placeholder="Cut Depth" value="-0.04"/><br>
+	 <br>
+    RUN IMMEDIATE<input type="checkbox" id="run"/>
 </div>
 <script>
 
@@ -77,8 +72,9 @@ $('.depth').change(function(){
 
 $('.inputContainer').data('open', 'false')
 
-$("#myCanvas").bind('vmousedown', function(e) {
-	e.preventDefault()
+$("#myCanvas").on('touchstart mousedown', function(e) {
+	console.log(e.type)
+	//e.preventDefault()
 	if($('.inputContainer').data('open')=='true'){
 		$('.inputContainer').css('right', '-1000px')
 		$('.inputContainer').data('open', 'false')
@@ -91,15 +87,22 @@ $("#myCanvas").bind('vmousedown', function(e) {
 	if($('.inputContainer').data('open')=='false'){
 		points.push([])
 		ctx.strokeStyle = "#4169e1"
-		points[points.length-1].push({x:e.clientX,y:e.clientY})
+		if(e.type=="mousedown"){
+			points[points.length-1].push({x:e.clientX,y:e.clientY})
+		}
+		else if(e.type=="touchstart"){
+			points[points.length-1].push({x:e.originalEvent.touches[0].clientX,y:e.originalEvent.touches[0].clientY})
+		}
+
 		sketch=true
 	}
 	
 })
 
-$("#myCanvas").bind('vmousemove', function(e) {
+$("#myCanvas").on('touchmove mousemove', function(e) {
+	//console.log(e)
 	e.preventDefault()
-	if((sketch==true) && (typeof e.clientX != 'undefined')) {
+	if((sketch==true) && (typeof e.clientX != 'undefined') && (e.type=="mousemove")) {
 				
 		if(points[points.length-1].length==1){
 			ctx.beginPath()
@@ -110,12 +113,24 @@ $("#myCanvas").bind('vmousemove', function(e) {
 	   ctx.stroke()
 
 	}
+	else if((sketch==true) && (e.type=="touchmove")) {
 
+		//console.log(e.originalEvent.touches[0].clientX)
+		if(points[points.length-1].length==1){
+			ctx.beginPath()
+			ctx.moveTo(e.originalEvent.touches[0].clientX,e.originalEvent.touches[0].clientY)
+		}		
+		ctx.lineTo(e.originalEvent.touches[0].clientX,e.originalEvent.touches[0].clientY)
+	   points[points.length-1].push({x:e.originalEvent.touches[0].clientX,y:e.originalEvent.touches[0].clientY})
+	   ctx.stroke()
+
+	}
 })
 
 
-$("#myCanvas").bind('vmouseup', function(e) {
-	e.preventDefault()
+$("#myCanvas").on('touchend mouseup', function(e) {
+	console.log(e.type)
+	//e.preventDefault()
 	if(sketch==true) {
 		sketch=false
 		makeSmooth()
@@ -124,10 +139,12 @@ $("#myCanvas").bind('vmouseup', function(e) {
 
 $('.menu-icon').click(function(){
     if ($('.inputContainer').data('open')== 'true'){
+		  document.getElementById("input").style.display="none";
         $('.inputContainer').css('right', '-1000px')
         $('.inputContainer').data('open', 'false')
 		  draw()
     } else {
+		  document.getElementById("input").style.display="block";
         $('.inputContainer').css('right', '10px')
         $('.inputContainer').data('open', 'true')
 		  draw()
