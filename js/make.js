@@ -66,6 +66,10 @@ if(document.getElementById("run").checked==true){
 }
 else{
 
+	if(jobNum==undefined){
+		jobNum = 1
+	}
+
 	fabmo.submitJob({
 		file : g,
 		filename : "sketch" + jobNum + ".g",
