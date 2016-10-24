@@ -77,7 +77,7 @@ else{
    	description : "Smooth Sketch"
 	});
 
-	jobNum++;
+	jobNum++
 
 	myConfig.job = jobNum
 	
