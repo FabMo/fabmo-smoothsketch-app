@@ -62,7 +62,7 @@ g+="m30\n"
 
 
 if(document.getElementById("run").checked==true){
-	fabmo.runGCode(g);
+	fabmo.runGCode(g)
 }
 else{
 
@@ -73,9 +73,9 @@ else{
    	description : "Smooth Sketch"
 	});
 
-	jobNum++
+	jobNum++;
 
-	myConfig.job = jobNum;
+	myConfig.job = jobNum
 	
 	fabmo.setAppConfig(myConfig)
 

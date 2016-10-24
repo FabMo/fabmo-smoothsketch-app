@@ -101,12 +101,12 @@ $("#myCanvas").on('touchstart mousedown', function(e) {
 
 $( "#run" ).change(function() {
 	if(document.getElementById("run").checked==true){
-		document.getElementById("submitJob").style.display="none";
-		document.getElementById("play").style.display="block";
+		document.getElementById("submitJob").style.display="none"
+		document.getElementById("play").style.display="block"
 	}
 	else{
-		document.getElementById("submitJob").style.display="block";
-		document.getElementById("play").style.display="none";
+		document.getElementById("submitJob").style.display="block"
+		document.getElementById("play").style.display="none"
 	}
 })
 
@@ -156,7 +156,7 @@ $('.menu-icon').click(function(){
 		  draw()
     } else {
 		  document.getElementById("input").style.display="block";
-        $('.inputContainer').css('right', '10px')
+        $('.inputContainer').css('right', '0px')
         $('.inputContainer').data('open', 'true')
 		  draw()
     }
@@ -172,9 +172,9 @@ $(window).resize(function(){
 
 fabmo.getAppConfig(function(err, myConfig) {
 	if(myConfig.job==undefined){
-		jobNum = 1;
-		myConfig.job = 1;
-		fabmo.setAppConfig(myConfig);
+		jobNum = 1
+		myConfig.job = 1
+		fabmo.setAppConfig(myConfig)
 	}
 	else{
 		jobNum = myConfig.job
