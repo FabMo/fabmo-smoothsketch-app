@@ -68,10 +68,16 @@ else{
 
 	fabmo.submitJob({
 		file : g,
-		filename : "sketch.g",
-		name : "SKETCH",
+		filename : "sketch" + jobNum + ".g",
+		name : "SKETCH " + jobNum,
    	description : "Smooth Sketch"
 	});
+
+	jobNum++
+
+	myConfig.job = jobNum;
+	
+	fabmo.setAppConfig(myConfig)
 
 	clear()
 }

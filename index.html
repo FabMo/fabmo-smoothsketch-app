@@ -50,6 +50,9 @@
 </div>
 <script>
 
+var jobNum;
+var myConfig = new Object();
+
 var SizeX = $('.width').val()
 var SizeY = $('.height').val()
 var CutDepth = $('.depth').val()
@@ -166,6 +169,17 @@ $('.clear-icon').click(function(){
 $(window).resize(function(){
 	clear()
 })
+
+fabmo.getAppConfig(function(err, myConfig) {
+	if(myConfig.job==undefined){
+		jobNum = 1;
+		myConfig.job = 1;
+		fabmo.setAppConfig(myConfig);
+	}
+	else{
+		jobNum = myConfig.job
+	}
+});
 
 </script>
 
