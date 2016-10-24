@@ -10,7 +10,6 @@ function make(){
 
 	//calculate scaling
 	//Bill's mods
-    var Scale
     
     DeltaX = (MaxX - MinX)
     DeltaY = (MaxY - MinY)
@@ -63,7 +62,7 @@ g+="m30\n"
 
 
 if(document.getElementById("run").checked==true){
-	fabmo.runGCode(g)
+	fabmo.runGCode(g);
 }
 else{
 
@@ -73,9 +72,11 @@ else{
 		name : "SKETCH",
    	description : "Smooth Sketch"
 	});
+
+	clear()
 }
 
-clear()
+
 
 }
 else{

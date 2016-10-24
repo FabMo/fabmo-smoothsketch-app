@@ -15,10 +15,6 @@
 <script src="js/draw.js"></script>
 <script src="js/smooth.js"></script>
 
-    <script type="text/javascript">
-        var fabmo = new FabMoDashboard();
-    </script>
-
 </head>
 
 <body onload="clear();">
@@ -50,7 +46,7 @@
     <label for="width">Cut Depth</label><br>
     <input type="number" name="depth"class="depth"  placeholder="Cut Depth" value="-0.04"/><p>
     RUN IMMEDIATE<br>
-	 <input type="checkbox" id="run"/>
+	 <input type="checkbox" id="run" autocomplete="off"/>
 </div>
 <script>
 
@@ -73,7 +69,7 @@ $('.depth').change(function(){
 $('.inputContainer').data('open', 'false')
 
 $("#myCanvas").on('touchstart mousedown', function(e) {
-	console.log(e.type)
+	//console.log(e.type)
 	//e.preventDefault()
 	if($('.inputContainer').data('open')=='true'){
 		document.getElementById("input").style.display="none";
@@ -98,6 +94,17 @@ $("#myCanvas").on('touchstart mousedown', function(e) {
 		sketch=true
 	}
 	
+})
+
+$( "#run" ).change(function() {
+	if(document.getElementById("run").checked==true){
+		document.getElementById("submitJob").style.display="none";
+		document.getElementById("play").style.display="block";
+	}
+	else{
+		document.getElementById("submitJob").style.display="block";
+		document.getElementById("play").style.display="none";
+	}
 })
 
 $("#myCanvas").on('touchmove mousemove', function(e) {
@@ -130,7 +137,7 @@ $("#myCanvas").on('touchmove mousemove', function(e) {
 
 
 $("#myCanvas").on('touchend mouseup', function(e) {
-	console.log(e.type)
+	//console.log(e.type)
 	//e.preventDefault()
 	if(sketch==true) {
 		sketch=false

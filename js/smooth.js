@@ -5,7 +5,7 @@ function makeSmooth(){
 		endpts[endpts.length-1].push(points[points.length-1][points[points.length-1].length-1])
 	}
 
-	if((Math.abs(endpts[endpts.length-1][0].x-endpts[endpts.length-1][1].x)<=15) && (Math.abs(endpts[endpts.length-1][0].y-endpts[endpts.length-1][1].y)<=15)){
+	if((Math.abs(endpts[endpts.length-1][0].x-endpts[endpts.length-1][1].x)<=10) && (Math.abs(endpts[endpts.length-1][0].y-endpts[endpts.length-1][1].y)<=10)){
 		endpts[endpts.length-1][1]=endpts[endpts.length-1][0]
 		points[points.length-1].push(endpts[endpts.length-1][0])
 		endpts.pop()
@@ -13,22 +13,22 @@ function makeSmooth(){
 	else{
 
 		for(i=endpts.length-2;i>=0;i--){
-			if((Math.abs(endpts[endpts.length-1][0].x-endpts[i][0].x)<=15) && (Math.abs(endpts[endpts.length-1][0].y-endpts[i][0].y)<=15)){
+			if((Math.abs(endpts[endpts.length-1][0].x-endpts[i][0].x)<=15) && (Math.abs(endpts[endpts.length-1][0].y-endpts[i][0].y)<=10)){
 				endpts[endpts.length-1][0]=endpts[i][0]
 				points[points.length-1].splice(0,0,endpts[i][0])
 			}
 	
-			if((Math.abs(endpts[endpts.length-1][1].x-endpts[i][1].x)<=15) && (Math.abs(endpts[endpts.length-1][1].y-endpts[i][1].y)<=15)){
+			if((Math.abs(endpts[endpts.length-1][1].x-endpts[i][1].x)<=15) && (Math.abs(endpts[endpts.length-1][1].y-endpts[i][1].y)<=10)){
 				endpts[endpts.length-1][1]=endpts[i][1]
 				points[points.length-1].push(endpts[i][1])
 			}
 	
-			if((Math.abs(endpts[endpts.length-1][1].x-endpts[i][0].x)<=15) && (Math.abs(endpts[endpts.length-1][1].y-endpts[i][0].y)<=15)){
+			if((Math.abs(endpts[endpts.length-1][1].x-endpts[i][0].x)<=15) && (Math.abs(endpts[endpts.length-1][1].y-endpts[i][0].y)<=10)){
 				endpts[endpts.length-1][1]=endpts[i][0]
 				points[points.length-1].push(endpts[i][0])
 			}
 	
-			if((Math.abs(endpts[endpts.length-1][0].x-endpts[i][1].x)<=15) && (Math.abs(endpts[endpts.length-1][0].y-endpts[i][1].y)<=15)){
+			if((Math.abs(endpts[endpts.length-1][0].x-endpts[i][1].x)<=15) && (Math.abs(endpts[endpts.length-1][0].y-endpts[i][1].y)<=10)){
 				endpts[endpts.length-1][0]=endpts[i][1]
 				points[points.length-1].splice(0,0,endpts[i][1])
 			}
@@ -92,7 +92,6 @@ function makeSmooth(){
 	}
 
 	//console.log(MinX + " " + MinY + " " + MaxX + " " + MaxY);
-
 	//console.log(smooth)
 	draw()
 
