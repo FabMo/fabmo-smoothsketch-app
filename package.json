@@ -1,10 +1,16 @@
 {
 	"name":"SmoothSketch",
+	"repository":"https://github.com/FabMo/fabmo-smoothsketch-app.git",
+	"license":"MIT",
 	"main":"./index.html",
 	"icon":"icon.png",
-	"icon_color":"white",
+	"icon_color":"#6495ED",
 	"version":"0.0.2",
 	"author":"Jonathan Ward",
 	"website":"http://github.com/FabMo/",
-	"description":"SmoothSketch"
+	"description":"SmoothSketch",
+	"devDependencies": {
+    	"grunt": "^0.4.5",
+    	"grunt-zip": "^0.17.1"
+  	}
 }
