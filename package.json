@@ -5,7 +5,7 @@
 	"main":"./index.html",
 	"icon":"icon.png",
 	"icon_color":"#6495ED",
-	"version":"0.0.2",
+	"version":"1.1.1",
 	"author":"Jonathan Ward",
 	"website":"http://github.com/FabMo/",
 	"description":"SmoothSketch",
