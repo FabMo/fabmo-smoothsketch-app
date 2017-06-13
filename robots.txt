@@ -1,2 +1,4 @@
 User-agent: *
 Disallow: /
+Disallow: /*/*/tree/master
+Disallow: /*/*/blob/master
